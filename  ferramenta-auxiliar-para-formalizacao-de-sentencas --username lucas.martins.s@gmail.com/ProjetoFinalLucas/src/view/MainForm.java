@@ -30,8 +30,7 @@ public class MainForm
 		 JLabel Label = new JLabel("Digite o texto em portugues abaixo:");
 
 		 frame.add(Label);
-		
-		 
+
 
 		
 		JLabel Label2 = new JLabel("Maria comprou um carro. Maria usa verde.");
