@@ -3,39 +3,41 @@ package naturalLanguageProcessing;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
 
 public class Heuristica 
 {
 	private String _inputText;
 	private List<DuplaTextoProcessado> _duplas;
-	private List<Frase> _frases;
-	private List<Axioma> _axiomas;
+	private List<ProposicaoMolecular> _frases;
+	private List<ProposicaoAtomica> _atomicas;
+	private DicionarioDeConectivos _dicionario;
 	
 	public Heuristica( String text )
 	{
 		_inputText = text;
-		_duplas = this.separaTexto(_inputText);
-		_frases = this.obtemListaDeFrases(_duplas);
-		_axiomas = this.FindAxioms(_frases);
+		_duplas = this.processaTexto(_inputText);
+		_dicionario = DicionarioDeConectivos.getInstance();
+		_frases = this.obtemListaDeProposicoes(_duplas);
+		_atomicas = this.obtemProposicoesAtomicas(_frases);
 	}
 	
-	public List<Axioma> getAxioms()
+	public List<ProposicaoAtomica> getProposicoesAtomicas()
 	{
-		return _axiomas;
+		return _atomicas;
 	}
 	
-	private List<Axioma> FindAxioms(List<Frase> frases)
+	private List<ProposicaoAtomica> obtemProposicoesAtomicas(List<ProposicaoMolecular> frases)
 	{
-		List<Axioma> axiomas = new ArrayList<Axioma>();
-		for ( Frase frase: frases) 
+		List<ProposicaoAtomica> axiomas = new ArrayList<ProposicaoAtomica>();
+		for ( ProposicaoMolecular frase: frases) 
 		{
+			frase.findConectivos(_dicionario);
 			frase.findSubjects();
 			frase.findVerb();
 			frase.findPredicate();
 			for ( DuplaTextoProcessado dp : frase._subjects)
 			{
-				axiomas.add(new Axioma(frase._verb, dp, frase._predicates, frase._corpo));
+				axiomas.add(new ProposicaoAtomica(frase._verb, dp, frase._predicates, frase._corpo));
 			}
 			 
 		}
@@ -46,30 +48,34 @@ public class Heuristica
 	
 	/**
 	 * 
-	 *  Retorna uma lista de Lista de Frases
+	 *  < Aprimorar este metodo > 
+	 * 
+	 *  Retorna uma lista de Lista de proposições. 
 	 * 
 	 * @param duplas
 	 * @return
 	 */
-	private List<Frase> obtemListaDeFrases ( List<DuplaTextoProcessado> duplas)
+	private List<ProposicaoMolecular> obtemListaDeProposicoes ( List<DuplaTextoProcessado> duplas)
 	{
-		List<Frase> frases = new ArrayList<Frase>();
+		List<ProposicaoMolecular> frases = new ArrayList<ProposicaoMolecular>();
 		List<DuplaTextoProcessado> frase = new ArrayList<DuplaTextoProcessado>();
 		for ( DuplaTextoProcessado item: duplas) 
 		{
 			 if ( item._palavra.equals("."))
 			 {
-				 frases.add(new Frase(frase));
+				
+				 frases.add(new ProposicaoMolecular(frase));
 				 frase.clear();
+				 
 			 }
 			 else if (item._palavra == "?")
 			 {
-				 frases.add(new Frase(frase));
+				// frases.add(new ProposicaoMolecular(frase)); Expressões não declarativas não podem ser proposicoes.
 				 frase.clear();
 			 }
 			 else if (item._palavra == "!")
 			 {
-				 frases.add(new Frase(frase));
+				 //frases.add(new ProposicaoMolecular(frase));  Expressões não declarativas não podem ser proposicoes.
 				 frase.clear();
 			 }
 			 else
@@ -81,14 +87,14 @@ public class Heuristica
 	
 	/**
 	 * 
-	 *  Retorna uma lista de objetos do tipo DuplaTextoProcessado que são uma lista de duplas, ( Text-SignificadoF-EXT ).
+	 *  Retorna uma lista de objetos do tipo DuplaTextoProcessado que são duplas texto-tag, ( Text-SignificadoF-EXT ).
 	 * 
-	 *  A partir desta lista irei encontrar frases. E das frases irei separar axiomas.
+	 *  A partir desta lista irei encontrar as proposicoes. E das que forem moleculares irei separar proposicoes atomicas.
 	 * 
 	 * @param text Texto já processado pelo F-EXT que gerará a lista de Duplas.
 	 * @return Lista do objeto DuplaTextoProcessado que é um uma dupla ( texto / Significado )
 	 */
-	private List<DuplaTextoProcessado> separaTexto( String text )
+	private List<DuplaTextoProcessado> processaTexto( String text )
 	{
 		 String[] itens;
 		 String[] aux;
