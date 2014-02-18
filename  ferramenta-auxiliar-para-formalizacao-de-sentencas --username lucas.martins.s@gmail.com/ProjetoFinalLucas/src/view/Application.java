@@ -31,7 +31,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
-import naturalLanguageProcessing.Axioma;
+import naturalLanguageProcessing.ProposicaoAtomica;
 import naturalLanguageProcessing.DuplaTextoProcessado;
 import naturalLanguageProcessing.Heuristica;
 import net.miginfocom.swing.MigLayout;
@@ -118,9 +118,9 @@ public class Application {
 				handler = FEXT_Handler.getInstance();
 				String answer = handler.EnrichText(txtInput.getText());
 				_heuristica = new Heuristica(answer);
-				List<Axioma> ax = new ArrayList<Axioma>(_heuristica.getAxioms());
+				List<ProposicaoAtomica> ax = new ArrayList<ProposicaoAtomica>(_heuristica.getProposicoesAtomicas());
 				String resp = "";
-				for ( Axioma axioma:ax )
+				for ( ProposicaoAtomica axioma:ax )
 				{
 					resp += axioma._subject._palavra; resp += " ";
 					resp += axioma._verb._palavra;resp += " ";
