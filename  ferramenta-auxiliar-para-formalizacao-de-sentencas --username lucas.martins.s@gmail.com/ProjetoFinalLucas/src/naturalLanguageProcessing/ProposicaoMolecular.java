@@ -46,7 +46,7 @@ public class ProposicaoMolecular
 	 * 
 	 * @param dicionario
 	 */
-	public void findConectivos( DicionarioDeConectivos dicionario)
+	public void findAndChangeConectivos( DicionarioDeConectivos dicionario)
 	{
 		for ( DuplaTextoProcessado dp: _corpo)
 		{
@@ -83,6 +83,50 @@ public class ProposicaoMolecular
 				
 			}
 		}
+	}
+
+	/**
+	 * 
+	 * Este método procura comparar esta proposição molecular a algum padrão pré definido. Para assim formaliza-la.
+	 * 
+	 */
+	private String IdentifyPattern( DicionarioDePadroes dicionario)
+	{
+		String proposicao = null;
+		
+		// Monto uma string com todas as palavras do corpo da proposicao.
+		for ( DuplaTextoProcessado dp: _corpo)
+		{
+			if ( dp._tag == "V")
+				proposicao += dp._tag;
+			else
+				proposicao += dp._palavra;
+			
+			proposicao += " ";
+		}
+		proposicao = proposicao.trim(); // Remove espacos em branco.
+		
+		int count = dicionario.getNumberOfElements();
+		
+		
+		// Neste for eu procuro por um match na expressão no meu dicionario de padroes. Se eu encontrar significa que eu consigo formalizar a sentença.
+		for ( int i = 0; i == count; i++)
+		{
+			if ( proposicao.matches(dicionario.ObtemConectivo(i)))
+				return dicionario.ObtemConectivo(i);
+		}
+		
+		return null;
+	}
+	
+	public String createLogicForm(DicionarioDePadroes dicionario)
+	{
+		
+		String pattern = IdentifyPattern(dicionario);
+		
+		
+		
+		return "aa";
 	}
 	
 	
