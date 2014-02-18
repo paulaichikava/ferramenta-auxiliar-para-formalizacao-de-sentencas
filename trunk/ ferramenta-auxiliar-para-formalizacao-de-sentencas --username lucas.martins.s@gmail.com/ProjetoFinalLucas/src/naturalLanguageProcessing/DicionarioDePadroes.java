@@ -3,30 +3,29 @@ package naturalLanguageProcessing;
 import java.util.HashMap;
 import java.util.Map;
 
-import fext.FEXT_Handler;
-
-public class DicionarioDeConectivos 
+public class DicionarioDePadroes 
 {
-	private static DicionarioDeConectivos _instance;
-	private Map<String, String> _map;
+	private static DicionarioDePadroes _instance;
+	private Map<Integer, String> _map;
+	private int _count;
 	
 	/**
-	 * Classe para se obter uma instancia do dicionario de conectivos.
+	 * Classe para se obter uma instancia do dicionario
 	 * 
 	 * 
 	 * @author Lucas
 	 * @return Instancia do DicionarioDeConectivos
 	 */
-	public static DicionarioDeConectivos getInstance()
+	public static DicionarioDePadroes getInstance()
 	{
 		if ( _instance == null )
 		{
-			_instance = new DicionarioDeConectivos();
+			_instance = new DicionarioDePadroes();
 		}
 		return _instance;
 	}
 	
-	protected DicionarioDeConectivos ()
+	protected DicionarioDePadroes ()
 	{
 		carregaDicionario();
 	}
@@ -34,7 +33,7 @@ public class DicionarioDeConectivos
 	
 	void carregaDicionario()
 	{
-		_map = new HashMap<String, String>();
+		_map = new HashMap<Integer, String>();
 		
 		// Aqui sera adicionado leitura de um arquivo texto com uma lista de conectivos.
 		
@@ -43,20 +42,25 @@ public class DicionarioDeConectivos
 		//						System.out.println(map.get("dog"));
 		
 		
-		_map.put("e","e");
-		_map.put("mas", "e");
-		_map.put("entretanto", "e");
+		_map.put(1,"e");
+		_map.put(2, "e");
+		_map.put(3, "e");
 		
-		_map.put("ou", "ou");
+		_map.put(4, "ou");
 		
 		
 		
 	}
 	
-	String ObtemConectivo(String conectivo)
+	int getNumberOfElements()
+	{
+		return _count;
+	}
+	
+	String ObtemConectivo(int conectivo)
 	{
 		String temp = _map.get(conectivo);
 		return temp;
 	}
-	
+
 }

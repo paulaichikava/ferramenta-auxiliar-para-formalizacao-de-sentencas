@@ -31,7 +31,7 @@ public class Heuristica
 		List<ProposicaoAtomica> axiomas = new ArrayList<ProposicaoAtomica>();
 		for ( ProposicaoMolecular frase: frases) 
 		{
-			frase.findConectivos(_dicionario);
+			frase.findAndChangeConectivos(_dicionario);
 			frase.findSubjects();
 			frase.findVerb();
 			frase.findPredicate();
