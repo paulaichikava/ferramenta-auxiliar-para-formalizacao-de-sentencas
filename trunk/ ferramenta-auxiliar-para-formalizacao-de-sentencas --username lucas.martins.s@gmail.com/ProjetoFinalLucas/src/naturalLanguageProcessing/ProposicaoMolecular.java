@@ -31,7 +31,7 @@ public class ProposicaoMolecular
 	{
 		for ( DuplaTextoProcessado dp: _corpo)
 		{
-			if ( dp._tag.contains("NPROP")) // 
+			if ( dp._tag.contains("NPROP")) 
 			{
 				_subjects.add(dp); // Talvez eu coloque uma pergunta aqui!  ( Pergunta ao verbo: "Quem foi a praia?" )
 			}
@@ -42,7 +42,7 @@ public class ProposicaoMolecular
 	/**
 	 * 
 	 * Este metodo procura por todos os conectivos da proposição no dicionario e substitui os que conseguir encontrar.
-	 * Caso não consiga encontrar ele fara uma pergunra ao usuário para tentar encontrar.
+	 * Caso não consiga encontrar ele fara uma pergunta ao usuário para tentar encontrar.
 	 * 
 	 * @param dicionario
 	 */
@@ -97,7 +97,7 @@ public class ProposicaoMolecular
 		// Monto uma string com todas as palavras do corpo da proposicao.
 		for ( DuplaTextoProcessado dp: _corpo)
 		{
-			if ( dp._tag == "V")
+			if ( dp._tag == "V" || dp._tag == "KC")
 				proposicao += dp._tag;
 			else
 				proposicao += dp._palavra;
@@ -109,7 +109,7 @@ public class ProposicaoMolecular
 		int count = dicionario.getNumberOfElements();
 		
 		
-		// Neste for eu procuro por um match na expressão no meu dicionario de padroes. Se eu encontrar significa que eu consigo formalizar a sentença.
+		// Neste for eu procuro por um match na expressão do meu dicionario de padroes. Se eu encontrar significa que eu consigo formalizar a sentença.
 		for ( int i = 0; i == count; i++)
 		{
 			if ( proposicao.matches(dicionario.ObtemConectivo(i)))

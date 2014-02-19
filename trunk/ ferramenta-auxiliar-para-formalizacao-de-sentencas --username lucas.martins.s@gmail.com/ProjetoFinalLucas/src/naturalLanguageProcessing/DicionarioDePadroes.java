@@ -1,12 +1,14 @@
 package naturalLanguageProcessing;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DicionarioDePadroes 
 {
 	private static DicionarioDePadroes _instance;
-	private Map<Integer, String> _map;
+	private Map<Integer, ProposicaoTag> _map;
+	private List<ProposicaoTag> _listTags;
 	private int _count;
 	
 	/**
@@ -33,7 +35,7 @@ public class DicionarioDePadroes
 	
 	void carregaDicionario()
 	{
-		_map = new HashMap<Integer, String>();
+		_map = new HashMap<Integer, ProposicaoTag>();
 		
 		// Aqui sera adicionado leitura de um arquivo texto com uma lista de conectivos.
 		
@@ -42,11 +44,11 @@ public class DicionarioDePadroes
 		//						System.out.println(map.get("dog"));
 		
 		
-		_map.put(1,"e");
-		_map.put(2, "e");
-		_map.put(3, "e");
+//		_map.put(1,"e");
+//		_map.put(2, "e");
+//		_map.put(3, "e");
 		
-		_map.put(4, "ou");
+//		_map.put(4, "ou");
 		
 		
 		
@@ -59,7 +61,7 @@ public class DicionarioDePadroes
 	
 	String ObtemConectivo(int conectivo)
 	{
-		String temp = _map.get(conectivo);
+		String temp = _map.get(conectivo).getIdRegexp(); // Devolve o idRegexp da ProposicaoTag.
 		return temp;
 	}
 
