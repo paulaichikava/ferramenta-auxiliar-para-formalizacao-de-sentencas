@@ -43,6 +43,8 @@ public class DicionarioDePadroes
 		//						map.put("dog", "type of animal");
 		//						System.out.println(map.get("dog"));
 		
+		// Caso: Maria e Jorge gostam de novela.
+		ProposicaoTag a1 = new ProposicaoTag(1, lista)
 		
 //		_map.put(1,"e");
 //		_map.put(2, "e");
