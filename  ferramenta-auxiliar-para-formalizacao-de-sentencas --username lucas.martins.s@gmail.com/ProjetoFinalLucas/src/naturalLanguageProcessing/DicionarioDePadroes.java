@@ -1,5 +1,6 @@
 package naturalLanguageProcessing;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,14 +38,21 @@ public class DicionarioDePadroes
 	{
 		_map = new HashMap<Integer, ProposicaoTag>();
 		
-		// Aqui sera adicionado leitura de um arquivo texto com uma lista de conectivos.
+		// Aqui sera adicionado leitura de um arquivo texto com uma lista.
 		
 		// Exemplo de como usar: 
 		//						map.put("dog", "type of animal");
 		//						System.out.println(map.get("dog"));
 		
-		// Caso: Maria e Jorge gostam de novela.
-		ProposicaoTag a1 = new ProposicaoTag(1, lista)
+		
+		//#####   Casos Hard Coded.  ####
+		
+		// Caso #1: Maria e Jorge gostam de novela.    ->  Maria KC Jorge V de novela
+		List<String> lista = new ArrayList<String>();
+		lista.add("KC.*(?=V)"); // Match "KC Jorge "
+		lista.add(".*?(?<=KC) "); // Match "Maria KC "
+		
+		ProposicaoTag a1 = new ProposicaoTag(".*? KC .*? V .*?\\.", lista);
 		
 //		_map.put(1,"e");
 //		_map.put(2, "e");
