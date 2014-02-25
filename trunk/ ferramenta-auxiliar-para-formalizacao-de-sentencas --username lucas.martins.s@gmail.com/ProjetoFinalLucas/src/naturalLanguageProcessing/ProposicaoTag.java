@@ -4,18 +4,18 @@ import java.util.List;
 
 public class ProposicaoTag 
 {
-	private String _idRegexp;
+	private String _matchCorpo; // Representa como a expressão é estruturada para a lista de regExp ( _listaRegExpDeProposicoesAtomicas) conseguir capturar as suas proposições atômicas.
 	private List<String> _listaRegExpDeProposicoesAtomicas;
 	
 	public ProposicaoTag( String id, List<String> lista )
 	{
-		_idRegexp = id;
+		_matchCorpo = id;
 		_listaRegExpDeProposicoesAtomicas = lista;
 	}
 	
 	public String getIdRegexp()
 	{
-		return _idRegexp;
+		return _matchCorpo;
 	}
 	
 	

@@ -8,7 +8,7 @@ public class Heuristica
 {
 	private String _inputText;
 	private List<DuplaTextoProcessado> _duplas;
-	private List<ProposicaoMolecular> _frases;
+	private List<ProposicaoMolecular> _proposicoes;
 	private List<ProposicaoAtomica> _atomicas;
 	private DicionarioDeConectivos _dicionario;
 	
@@ -17,8 +17,8 @@ public class Heuristica
 		_inputText = text;
 		_duplas = this.processaTexto(_inputText);
 		_dicionario = DicionarioDeConectivos.getInstance();
-		_frases = this.obtemListaDeProposicoes(_duplas);
-		_atomicas = this.obtemProposicoesAtomicas(_frases);
+		_proposicoes = this.obtemListaDeProposicoes(_duplas); // Aqui populo a lista de frases com proposições moleculares ou atomicas.
+		_atomicas = this.obtemProposicoesAtomicas(_proposicoes);  
 	}
 	
 	public List<ProposicaoAtomica> getProposicoesAtomicas()
@@ -26,22 +26,30 @@ public class Heuristica
 		return _atomicas;
 	}
 	
-	private List<ProposicaoAtomica> obtemProposicoesAtomicas(List<ProposicaoMolecular> frases)
+	private List<ProposicaoAtomica> obtemProposicoesAtomicas(List<ProposicaoMolecular> proposicoes)
 	{
-		List<ProposicaoAtomica> axiomas = new ArrayList<ProposicaoAtomica>();
-		for ( ProposicaoMolecular frase: frases) 
+		List<ProposicaoAtomica> atomicas = new ArrayList<ProposicaoAtomica>();
+		for ( ProposicaoMolecular proposicao: proposicoes) 
 		{
-			frase.findAndChangeConectivos(_dicionario);
-			frase.findSubjects();
-			frase.findVerb();
-			frase.findPredicate();
-			for ( DuplaTextoProcessado dp : frase._subjects)
+			proposicao.findAndChangeConectivos(_dicionario);
+			if ( proposicao._conectivoPrincipal == null)
 			{
-				axiomas.add(new ProposicaoAtomica(frase._verb, dp, frase._predicates, frase._corpo));
+				if ( proposicao._corpo.get(0)._palavra == " ")// Removo o espaco no inicio da proposicao.
+					proposicao._corpo.remove(0);
+				
+				atomicas.add(new ProposicaoAtomica(null, proposicao._corpo));
 			}
+			
+			//frase.findSubjects();
+			//frase.findVerb();
+			//frase.findPredicate();
+			//for ( DuplaTextoProcessado dp : frase._subjects)
+			//{
+			//	axiomas.add(new ProposicaoAtomica(frase._verb, dp, frase._predicates, frase._corpo));
+			//}
 			 
 		}
-		return axiomas;
+		return atomicas;
 	}
 	
 	
@@ -63,7 +71,7 @@ public class Heuristica
 		{
 			 if ( item._palavra.equals("."))
 			 {
-				
+				 frase.add(item);
 				 frases.add(new ProposicaoMolecular(frase));
 				 frase.clear();
 				 

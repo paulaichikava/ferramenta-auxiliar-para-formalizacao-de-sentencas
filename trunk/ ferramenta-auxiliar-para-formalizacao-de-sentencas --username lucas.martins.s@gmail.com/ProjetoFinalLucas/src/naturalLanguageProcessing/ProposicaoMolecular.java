@@ -61,6 +61,8 @@ public class ProposicaoMolecular
 		{
 			_conectivoPrincipal = null;
 		}
+		else if (_conectivos.size() == 1 )
+			_conectivoPrincipal = _conectivos.get(0)._palavra;
 		else // Caso contrario.
 		{
 			for ( DuplaTextoProcessado dp: _conectivos)
