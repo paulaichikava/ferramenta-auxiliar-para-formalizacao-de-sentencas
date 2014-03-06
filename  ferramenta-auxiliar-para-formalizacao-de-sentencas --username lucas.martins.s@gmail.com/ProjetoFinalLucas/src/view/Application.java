@@ -90,7 +90,7 @@ public class Application {
 	private void initialize() 
 	{
 		frmProjetoFinalExemplo = new JFrame();
-		frmProjetoFinalExemplo.setTitle("Projeto Final Exemplo ");
+		frmProjetoFinalExemplo.setTitle("Projeto Final");
 		frmProjetoFinalExemplo.setBounds(100, 100, 800, 600);
 		frmProjetoFinalExemplo.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
