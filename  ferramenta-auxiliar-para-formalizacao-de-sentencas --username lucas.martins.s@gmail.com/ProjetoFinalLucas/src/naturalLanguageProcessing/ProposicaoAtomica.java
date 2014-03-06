@@ -3,9 +3,8 @@ package naturalLanguageProcessing;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProposicaoAtomica 
+public class ProposicaoAtomica extends Proposicao
 {
-	public List<DuplaTextoProcessado> _proposicaoTotal; // Corpo da frase
 	public DuplaTextoProcessado _verbo; // Não estou usando por enquanto..
 	public DuplaTextoProcessado _sujeito; // Não estou usando por enquanto..
 	public List<DuplaTextoProcessado>  _predicados; // Não estou usando por enquanto..
@@ -20,12 +19,12 @@ public class ProposicaoAtomica
 		_verbo = verb;
 		_sujeito = subject;
 		_predicados = new ArrayList<DuplaTextoProcessado>(predicate);
-		_proposicaoTotal = new ArrayList<DuplaTextoProcessado>(proposicaoTotal);
+		_corpo = new ArrayList<DuplaTextoProcessado>(proposicaoTotal);
 	}
 
 	public ProposicaoAtomica( DuplaTextoProcessado verbo, List<DuplaTextoProcessado> corpo)
 	{
 		_verbo = verbo;
-		_proposicaoTotal = corpo;
+		_corpo = corpo;
 	}
 }

@@ -3,15 +3,12 @@ package naturalLanguageProcessing;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProposicaoMolecular 
+public class ProposicaoMolecular extends Proposicao
 {
 
-	public List<DuplaTextoProcessado> _corpo;
-	public List<DuplaTextoProcessado> _subjects;
-	public DuplaTextoProcessado _verb;
-	public List<DuplaTextoProcessado> _predicates;
-	public List<DuplaTextoProcessado> _conectivos;
-	public String _conectivoPrincipal;
+	public List<DuplaTextoProcessado> _conectivos; // Conectivos
+	public String _conectivoPrincipal; // Conectivo Principal
+	
 	
 	public ProposicaoMolecular(List<DuplaTextoProcessado> corpo)
 	{
@@ -41,8 +38,8 @@ public class ProposicaoMolecular
 	
 	/**
 	 * 
-	 * Este metodo procura por todos os conectivos da proposição no dicionario e substitui os que conseguir encontrar.
-	 * Caso não consiga encontrar ele fara uma pergunta ao usuário para tentar encontrar.
+	 * Este método procura por todos os conectivos da proposição no dicionario e substitui os que conseguir encontrar.
+	 * Caso não consiga encontrar ele fará uma pergunta ao usuário para tentar encontrar.
 	 * 
 	 * @param dicionario
 	 */
@@ -94,12 +91,12 @@ public class ProposicaoMolecular
 	 */
 	private String IdentifyPattern( DicionarioDePadroes dicionario)
 	{
-		String proposicao = null;
+		String proposicao = "";
 		
 		// Monto uma string com todas as palavras do corpo da proposicao.
 		for ( DuplaTextoProcessado dp: _corpo)
 		{
-			if ( dp._tag == "V" || dp._tag == "KC")
+			if ( dp._tag.equals("V") || dp._tag.equals("KC"))
 				proposicao += dp._tag;
 			else
 				proposicao += dp._palavra;
@@ -108,29 +105,110 @@ public class ProposicaoMolecular
 		}
 		proposicao = proposicao.trim(); // Remove espacos em branco.
 		
+	//	proposicao = DuplaTextoProcessado.convertListDuplaProcessadoToString(_corpo);
+		
 		int count = dicionario.getNumberOfElements();
 		
 		
 		// Neste for eu procuro por um match na expressão do meu dicionario de padroes. Se eu encontrar significa que eu consigo formalizar a sentença.
-		for ( int i = 0; i == count; i++)
+		for ( int i = 0; i <= count; i++)
 		{
-			if ( proposicao.matches(dicionario.ObtemConectivo(i)))
-				return dicionario.ObtemConectivo(i);
+			if ( proposicao.matches(dicionario.ObtemIdDoElementoDoDicionario(i)))
+				return dicionario.ObtemIdDoElementoDoDicionario(i);
 		}
 		
 		return null;
 	}
 	
+	/**
+	 *   Este método retorna a forma lógica desta proposicao. ( Ainda não está concluído )
+	 *  
+	 * @param dicionario
+	 * @return
+	 */
 	public String createLogicForm(DicionarioDePadroes dicionario)
 	{
+	    // Pattern é a ProposicaoTag desta proposição.
+		String idRegexp = IdentifyPattern(dicionario);
 		
-		String pattern = IdentifyPattern(dicionario);
+		ProposicaoTag t = dicionario.ObtemProposicaoTag(idRegexp);
 		
+		return t.getLogicFormDestaProposicaoTag();
 		
-		
-		return "aa";
 	}
 	
+	/**
+	 *   Este método retorna uma lista com as proposições atômicas desta proposição. 
+	 * @param dicionarioPadroes
+	 * @return
+	 */
+	public List<ProposicaoAtomica> getListadeProposicoesAtomicas(DicionarioDePadroes dicionarioPadroes, DicionarioDeConectivos dicionarioConec)
+	{
+		String corpo = ""; // Lista de DuplaTextoProcessado
+		// Monto uma string com todas as palavras do corpo da proposicao. É adicionado o número das proposicões.
+		int m = 0; int n = 0;
+		List<String> lstV = new ArrayList<String>();
+		List<String> lstKC = new ArrayList<String>();
+		for ( DuplaTextoProcessado dp: _corpo)
+		{
+			corpo += " ";
+			if ( dp._tag.equals("V") )
+			{
+				corpo += dp._tag + Integer.toString(m);
+				lstV.add(dp._palavra);
+				m++;
+			}
+			else if (dp._tag.equals("KC") )
+			{
+				corpo += dp._tag + Integer.toString(n);
+				lstKC.add(dp._palavra);
+				n++;
+			}
+			else
+				corpo += dp._palavra;	
+			
+		}
+		corpo = corpo.trim(); // Remove espacos em branco.
+		
+		String proposicoesAtomicas = "";
+		List<ProposicaoAtomica> lst;
+		
+		// Pattern é a ProposicaoTag desta proposição.
+		String idRegexp = IdentifyPattern(dicionarioPadroes);
+		ProposicaoTag Pattern = dicionarioPadroes.ObtemProposicaoTag(idRegexp);
+			
+		// Número de proposicões atomicas que termos. ( Dado pelo Pattern)
+		int numeroDeProposicoes = Pattern.getNumeroDeProposicoesAtomicas();
+		proposicoesAtomicas = ""; // Esta variavel conterá todas as proposicoes atômicas desta proposicao concatenadas.
+		
+		// Este for executa numeroDeProposicoes vezes.
+		for ( int i = 0; i < numeroDeProposicoes; i++) 
+		{
+			proposicoesAtomicas += corpo.replaceFirst(Pattern.getRexpForNprop(i), "");
+		}
+		
+		// Devo trocar os nomes KC0, KC1 e etc.. pelos conectivos e os Verbos V0, V1, e etc.. pelos verbos
+		m = 0; n = 0;
+		for( String v : lstV)
+		{
+			proposicoesAtomicas = proposicoesAtomicas.replace("V"+Integer.toString(m), v);
+			m++;
+		}
+		for( String kc : lstKC)
+		{
+			proposicoesAtomicas = proposicoesAtomicas.replace("KC"+Integer.toString(n), kc);
+			n++;
+		}
+		
+		
+		// Neste momento eu tenho a string proposicoesAtomicas com todas as proposições atomicas. Vou separar elas em proposicoes atomicas.
+		String proposicoesAtomicasEnriquecidas = Heuristica.enriquecerComFexTexto(proposicoesAtomicas);
+		// Agora eu tenho uma lista de DuplaTextoProcessado com todas as proposições atômicas.
+		List<DuplaTextoProcessado> listDuplas = DuplaTextoProcessado.processaTexto(proposicoesAtomicasEnriquecidas);
+		List<ProposicaoMolecular> listMol = Proposicao.obtemListaDeProposicoes(listDuplas);
+		lst = Proposicao.obtemProposicoesAtomicas(listMol, dicionarioConec);
+		return lst;
+	}
 	
 	/**
 	 *  < Obsoleto >
@@ -188,5 +266,6 @@ public class ProposicaoMolecular
 	
 	
 	
+
 	
 }

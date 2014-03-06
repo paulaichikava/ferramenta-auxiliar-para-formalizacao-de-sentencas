@@ -3,8 +3,6 @@ package naturalLanguageProcessing;
 import java.util.HashMap;
 import java.util.Map;
 
-import fext.FEXT_Handler;
-
 public class DicionarioDeConectivos 
 {
 	private static DicionarioDeConectivos _instance;
