@@ -34,6 +34,7 @@ import java.awt.Insets;
 import naturalLanguageProcessing.ProposicaoAtomica;
 import naturalLanguageProcessing.DuplaTextoProcessado;
 import naturalLanguageProcessing.Heuristica;
+import naturalLanguageProcessing.ProposicaoMolecular;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.GroupLayout;
@@ -93,7 +94,7 @@ public class Application {
 		frmProjetoFinalExemplo.setBounds(100, 100, 800, 600);
 		frmProjetoFinalExemplo.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		JLabel lblNewLabel = new JLabel("Insira uma frase em portugues:");
+		JLabel lblNewLabel = new JLabel("Insira uma frase em português:");
 		lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD, 20));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		frmProjetoFinalExemplo.getContentPane().setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{lblNewLabel}));
@@ -115,21 +116,26 @@ public class Application {
 			public void mouseClicked(MouseEvent arg0) 
 			{
 			//	JOptionPane.showMessageDialog(null, "My Goodness, this is so concise");
+				char q = 112;
 				handler = FEXT_Handler.getInstance();
 				String answer = handler.EnrichText(txtInput.getText());
 				_heuristica = new Heuristica(answer);
-				List<ProposicaoAtomica> ax = new ArrayList<ProposicaoAtomica>(_heuristica.getProposicoesAtomicas());
+				List<ProposicaoMolecular> propMol = new ArrayList<ProposicaoMolecular>(_heuristica.getProposicoes());
 				String resp = "";
-				for ( ProposicaoAtomica axioma:ax )
+				int i = 0;
+				for ( ProposicaoMolecular proposicao:propMol )
 				{
-					resp += axioma._subject._palavra; resp += " ";
-					resp += axioma._verb._palavra;resp += " ";
-					for ( DuplaTextoProcessado duplaText : axioma._predicates)
+					resp += "Para a proposicao: "+ proposicao.getCorpoDaProposicaoEmString()+ "\n";
+					resp += "Temos:" + _heuristica.formaLogicaDaProposicao(i) + "\n";
+					resp += "Onde:" + "\n";
+					List<ProposicaoAtomica> propAtm = _heuristica.proposicoesAtomicasDaProposicao(i);
+					for ( ProposicaoAtomica p : propAtm)
 					{
-						resp+=duplaText._palavra;resp += " ";
+						char a = q;
+						resp += Character.toString(a)+ ": "+ p.getCorpoDaProposicaoEmString()+ " ";
+						q++;
 					}
-					resp+= "\n";
-					
+					i++;	
 				}
 				textAreaResposta.setText(resp);
 				
