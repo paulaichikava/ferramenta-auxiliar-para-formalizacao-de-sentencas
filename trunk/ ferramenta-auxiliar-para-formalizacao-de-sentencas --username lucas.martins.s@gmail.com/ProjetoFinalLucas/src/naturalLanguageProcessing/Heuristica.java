@@ -1,7 +1,8 @@
 package naturalLanguageProcessing;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import fext.FEXT_Handler;
 
 
 public class Heuristica 
@@ -10,15 +11,18 @@ public class Heuristica
 	private List<DuplaTextoProcessado> _duplas;
 	private List<ProposicaoMolecular> _proposicoes;
 	private List<ProposicaoAtomica> _atomicas;
-	private DicionarioDeConectivos _dicionario;
+	private DicionarioDeConectivos _dicionarioConectivos;
+	private DicionarioDePadroes _dicionarioPadroes;
+	private static FEXT_Handler _fextHandler;
 	
 	public Heuristica( String text )
 	{
 		_inputText = text;
-		_duplas = this.processaTexto(_inputText);
-		_dicionario = DicionarioDeConectivos.getInstance();
-		_proposicoes = this.obtemListaDeProposicoes(_duplas); // Aqui populo a lista de frases com proposições moleculares ou atomicas.
-		_atomicas = this.obtemProposicoesAtomicas(_proposicoes);  
+		_duplas = DuplaTextoProcessado.processaTexto(_inputText);
+		_dicionarioConectivos = DicionarioDeConectivos.getInstance();
+		_dicionarioPadroes = DicionarioDePadroes.getInstance();
+		_proposicoes = Proposicao.obtemListaDeProposicoes(_duplas); // Aqui populo a lista de frases com proposições moleculares ou atomicas.
+		_atomicas = Proposicao.obtemProposicoesAtomicas(_proposicoes,_dicionarioConectivos);  
 	}
 	
 	public List<ProposicaoAtomica> getProposicoesAtomicas()
@@ -26,106 +30,37 @@ public class Heuristica
 		return _atomicas;
 	}
 	
-	private List<ProposicaoAtomica> obtemProposicoesAtomicas(List<ProposicaoMolecular> proposicoes)
+	public String formaLogicaDaProposicao(int n)
 	{
-		List<ProposicaoAtomica> atomicas = new ArrayList<ProposicaoAtomica>();
-		for ( ProposicaoMolecular proposicao: proposicoes) 
-		{
-			proposicao.findAndChangeConectivos(_dicionario);
-			if ( proposicao._conectivoPrincipal == null)
-			{
-				if ( proposicao._corpo.get(0)._palavra == " ")// Removo o espaco no inicio da proposicao.
-					proposicao._corpo.remove(0);
-				
-				atomicas.add(new ProposicaoAtomica(null, proposicao._corpo));
-			}
-			
-			//frase.findSubjects();
-			//frase.findVerb();
-			//frase.findPredicate();
-			//for ( DuplaTextoProcessado dp : frase._subjects)
-			//{
-			//	axiomas.add(new ProposicaoAtomica(frase._verb, dp, frase._predicates, frase._corpo));
-			//}
-			 
-		}
-		return atomicas;
+		ProposicaoMolecular prop = _proposicoes.get(n);
+		return prop.createLogicForm(_dicionarioPadroes);		
 	}
 	
-	
-	
-	/**
-	 * 
-	 *  < Aprimorar este metodo > 
-	 * 
-	 *  Retorna uma lista de Lista de proposições. 
-	 * 
-	 * @param duplas
-	 * @return
-	 */
-	private List<ProposicaoMolecular> obtemListaDeProposicoes ( List<DuplaTextoProcessado> duplas)
+	public List<ProposicaoAtomica> proposicoesAtomicasDaProposicao(int n)
 	{
-		List<ProposicaoMolecular> frases = new ArrayList<ProposicaoMolecular>();
-		List<DuplaTextoProcessado> frase = new ArrayList<DuplaTextoProcessado>();
-		for ( DuplaTextoProcessado item: duplas) 
-		{
-			 if ( item._palavra.equals("."))
-			 {
-				 frase.add(item);
-				 frases.add(new ProposicaoMolecular(frase));
-				 frase.clear();
-				 
-			 }
-			 else if (item._palavra == "?")
-			 {
-				// frases.add(new ProposicaoMolecular(frase)); Expressões não declarativas não podem ser proposicoes.
-				 frase.clear();
-			 }
-			 else if (item._palavra == "!")
-			 {
-				 //frases.add(new ProposicaoMolecular(frase));  Expressões não declarativas não podem ser proposicoes.
-				 frase.clear();
-			 }
-			 else
-				 frase.add(item);
-		}
-		
-		return frases;
+		ProposicaoMolecular prop = _proposicoes.get(n);
+		return prop.getListadeProposicoesAtomicas(_dicionarioPadroes, _dicionarioConectivos);
 	}
 	
 	/**
-	 * 
-	 *  Retorna uma lista de objetos do tipo DuplaTextoProcessado que são duplas texto-tag, ( Text-SignificadoF-EXT ).
-	 * 
-	 *  A partir desta lista irei encontrar as proposicoes. E das que forem moleculares irei separar proposicoes atomicas.
-	 * 
-	 * @param text Texto já processado pelo F-EXT que gerará a lista de Duplas.
-	 * @return Lista do objeto DuplaTextoProcessado que é um uma dupla ( texto / Significado )
+	 *   Retorna as proposições do texto inserido nesta classe {@link Heuristica}
+	 * @return Uma lista de {@link ProposicaoMolecular}
 	 */
-	private List<DuplaTextoProcessado> processaTexto( String text )
+	public List<ProposicaoMolecular> getProposicoes()
 	{
-		 String[] itens;
-		 String[] aux;
-		 List<DuplaTextoProcessado> listParts = new ArrayList<DuplaTextoProcessado>();
-		 int i = 0;
-		 
-		 itens =  text.split("\n");
-		 
-		 System.out.println(text);
-		
-		 for ( String elem: itens) 
-		 {
-			 if ( i > 1 & i < itens.length  )
-			 {
-				aux = elem.split(" ");
-				DuplaTextoProcessado part = new DuplaTextoProcessado(aux[0], aux[aux.length-1]);
-				listParts.add(part);
-			 }i++;
-		 }
-		 
-		 return listParts;
-		 
+		return _proposicoes;
 	}
+	public static String enriquecerComFexTexto( String texto )
+	{
+		_fextHandler = FEXT_Handler.getInstance();
+		String answer = _fextHandler.EnrichText(texto);
+		return answer;
+	}
+	
+	
+	
+	
+	
 	
 	
 
