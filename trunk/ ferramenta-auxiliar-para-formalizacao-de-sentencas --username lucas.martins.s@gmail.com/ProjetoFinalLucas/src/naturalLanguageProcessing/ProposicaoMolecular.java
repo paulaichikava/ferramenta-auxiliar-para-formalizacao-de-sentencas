@@ -96,7 +96,7 @@ public class ProposicaoMolecular extends Proposicao
 		// Monto uma string com todas as palavras do corpo da proposicao.
 		for ( DuplaTextoProcessado dp: _corpo)
 		{
-			if ( dp._tag.equals("V") || dp._tag.equals("KC"))
+			if ( dp._tag.equals("V") || dp._tag.equals("KC") || dp._tag.equals("VAUX"))
 				proposicao += dp._tag;
 			else
 				proposicao += dp._palavra;
@@ -111,7 +111,7 @@ public class ProposicaoMolecular extends Proposicao
 		
 		
 		// Neste for eu procuro por um match na expressão do meu dicionario de padroes. Se eu encontrar significa que eu consigo formalizar a sentença.
-		for ( int i = 0; i <= count; i++)
+		for ( int i = count-1; i >= 0; i--)
 		{
 			if ( proposicao.matches(dicionario.ObtemIdDoElementoDoDicionario(i)))
 				return dicionario.ObtemIdDoElementoDoDicionario(i);
@@ -146,9 +146,10 @@ public class ProposicaoMolecular extends Proposicao
 	{
 		String corpo = ""; // Lista de DuplaTextoProcessado
 		// Monto uma string com todas as palavras do corpo da proposicao. É adicionado o número das proposicões.
-		int m = 0; int n = 0;
+		int m = 0; int n = 0; int o = 0;
 		List<String> lstV = new ArrayList<String>();
 		List<String> lstKC = new ArrayList<String>();
+		List<String> lstVAUX = new ArrayList<String>();
 		for ( DuplaTextoProcessado dp: _corpo)
 		{
 			corpo += " ";
@@ -163,6 +164,12 @@ public class ProposicaoMolecular extends Proposicao
 				corpo += dp._tag + Integer.toString(n);
 				lstKC.add(dp._palavra);
 				n++;
+			}
+			else if (dp._tag.equals("VAUX") )
+			{
+				corpo += dp._tag + Integer.toString(o);
+				lstVAUX.add(dp._palavra);
+				o++;
 			}
 			else
 				corpo += dp._palavra;	
@@ -188,7 +195,7 @@ public class ProposicaoMolecular extends Proposicao
 		}
 		
 		// Devo trocar os nomes KC0, KC1 e etc.. pelos conectivos e os Verbos V0, V1, e etc.. pelos verbos
-		m = 0; n = 0;
+		m = 0; n = 0; o = 0;
 		for( String v : lstV)
 		{
 			proposicoesAtomicas = proposicoesAtomicas.replace("V"+Integer.toString(m), v);
@@ -199,7 +206,11 @@ public class ProposicaoMolecular extends Proposicao
 			proposicoesAtomicas = proposicoesAtomicas.replace("KC"+Integer.toString(n), kc);
 			n++;
 		}
-		
+		for( String vaux : lstVAUX)
+		{
+			proposicoesAtomicas = proposicoesAtomicas.replace("VAUX"+Integer.toString(o), vaux);
+			o++;
+		}
 		
 		// Neste momento eu tenho a string proposicoesAtomicas com todas as proposições atomicas. Vou separar elas em proposicoes atomicas.
 		String proposicoesAtomicasEnriquecidas = Heuristica.enriquecerComFexTexto(proposicoesAtomicas);
