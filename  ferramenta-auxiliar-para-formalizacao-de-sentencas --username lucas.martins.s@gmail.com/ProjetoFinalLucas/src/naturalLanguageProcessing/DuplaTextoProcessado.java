@@ -21,6 +21,43 @@ public class DuplaTextoProcessado
 		_tag = type;
 	}
 	
+	
+	/**
+	 *  A Partir de uma lista de {@link DuplaTextoProcessado} e de uma string, recupero os tags da string usando a lista como análise.
+	 *  Retornando uma lista de {@link DuplaTextoProcessado} que representa a string processada pelo F-EXT.
+	 * @param str String
+	 * @param listDP Lista de {@link DuplaTextoProcessado} que será usada como base.
+	 * @return
+	 */
+	public static List<DuplaTextoProcessado> recuperaTagsDaString(String str, List<DuplaTextoProcessado> listDP)
+	{
+		List<DuplaTextoProcessado> lst = new ArrayList<DuplaTextoProcessado>();
+		
+		// Proxima linha existe para garatir que a ordem das palavras na lista é fiel a string Str
+	//	str = str.replaceAll("\\.", " \\. ");
+		str = str+" ";
+		String palavra = str.substring(0, str.indexOf(" "));  // Obtenho a 1 palavra da string. Quero adicionar ela.
+		
+		int i = 0;
+		while ( palavra != null)
+		{
+			if ( i == listDP.size() )
+				i = 0;
+			DuplaTextoProcessado dp = listDP.get(i);
+			if (palavra.equals(dp._palavra))
+			{
+				lst.add(dp);
+				str = str.replaceFirst(dp._palavra +" ", "");
+				if ( !str.equals(""))
+					palavra = str.substring(0, str.indexOf(" ")); // Obtenho a proxima palavra da minha lista.
+				else
+					palavra = null;
+			}
+			i++;
+		}
+		return lst;		
+	}
+	
 	/**
 	 * 
 	 *  Retorna uma lista de objetos do tipo DuplaTextoProcessado que são duplas texto-tag, ( Text-SignificadoF-EXT ).
