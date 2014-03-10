@@ -138,13 +138,22 @@ public class ProposicaoMolecular extends Proposicao
 	}
 	
 	/**
-	 *   Este método retorna uma lista com as proposições atômicas desta proposição. 
+	 *   Método recursivo que retorna uma lista com as proposições atômicas desta proposição. 
 	 * @param dicionarioPadroes
 	 * @return
 	 */
 	public List<ProposicaoAtomica> getListadeProposicoesAtomicas(DicionarioDePadroes dicionarioPadroes, DicionarioDeConectivos dicionarioConec)
 	{
-		String corpo = ""; // Lista de DuplaTextoProcessado
+		// Teremos uma recursão aqui. Talvez esta linha abaixo tenha que ser um parametro!
+		List<ProposicaoAtomica> lst = new ArrayList<ProposicaoAtomica>();
+
+		if ( this.isAtomic(this) )
+		{
+			// Caso BASE!
+			lst.add(new ProposicaoAtomica(_corpo));
+			return lst;
+		}
+		String corpo = "";
 		// Monto uma string com todas as palavras do corpo da proposicao. É adicionado o número das proposicões.
 		int m = 0; int n = 0; int o = 0;
 		List<String> lstV = new ArrayList<String>();
@@ -152,74 +161,86 @@ public class ProposicaoMolecular extends Proposicao
 		List<String> lstVAUX = new ArrayList<String>();
 		for ( DuplaTextoProcessado dp: _corpo)
 		{
-			corpo += " ";
 			if ( dp._tag.equals("V") )
 			{
+				corpo += " ";
 				corpo += dp._tag + Integer.toString(m);
 				lstV.add(dp._palavra);
 				m++;
 			}
 			else if (dp._tag.equals("KC") )
 			{
+				corpo += " ";
 				corpo += dp._tag + Integer.toString(n);
 				lstKC.add(dp._palavra);
 				n++;
 			}
 			else if (dp._tag.equals("VAUX") )
 			{
+				corpo += " ";
 				corpo += dp._tag + Integer.toString(o);
 				lstVAUX.add(dp._palavra);
 				o++;
 			}
-			else
+			else if (dp._tag.equals("\\."))
 				corpo += dp._palavra;	
+			else
+			{
+				corpo += " ";
+				corpo += dp._palavra;	
+			}
 			
 		}
 		corpo = corpo.trim(); // Remove espacos em branco.
 		
 		String proposicoesAtomicas = "";
-		List<ProposicaoAtomica> lst;
-		
+				
 		// Pattern é a ProposicaoTag desta proposição.
 		String idRegexp = IdentifyPattern(dicionarioPadroes);
 		ProposicaoTag Pattern = dicionarioPadroes.ObtemProposicaoTag(idRegexp);
 			
-		// Número de proposicões atomicas que termos. ( Dado pelo Pattern)
+		// Número de proposicões atomicas que termos. (Dado pelo Pattern)
 		int numeroDeProposicoes = Pattern.getNumeroDeProposicoesAtomicas();
 		proposicoesAtomicas = ""; // Esta variavel conterá todas as proposicoes atômicas desta proposicao concatenadas.
 		
 		// Este for executa numeroDeProposicoes vezes.
 		for ( int i = 0; i < numeroDeProposicoes; i++) 
 		{
-			proposicoesAtomicas += corpo.replaceFirst(Pattern.getRexpForNprop(i), "");
+			// Obtem a primeira Proposicao
+			proposicoesAtomicas += " " + corpo.replaceFirst(Pattern.getRexpForNprop(i), "");
+			
+			// Devo trocar os nomes KC0, KC1 e etc.. pelos conectivos e os Verbos V0, V1, e etc.. pelos verbos
+			m = 0; n = 0; o = 0;
+			for( String v : lstV)
+			{
+				proposicoesAtomicas = proposicoesAtomicas.replace("V"+Integer.toString(m), v);
+				m++;
+			}
+			for( String kc : lstKC)
+			{
+				proposicoesAtomicas = proposicoesAtomicas.replace("KC"+Integer.toString(n), kc);
+				n++;
+			}
+			for( String vaux : lstVAUX)
+			{
+				proposicoesAtomicas = proposicoesAtomicas.replace("VAUX"+Integer.toString(o), vaux);
+				o++;
+			}
+			
 		}
 		
-		// Devo trocar os nomes KC0, KC1 e etc.. pelos conectivos e os Verbos V0, V1, e etc.. pelos verbos
-		m = 0; n = 0; o = 0;
-		for( String v : lstV)
-		{
-			proposicoesAtomicas = proposicoesAtomicas.replace("V"+Integer.toString(m), v);
-			m++;
-		}
-		for( String kc : lstKC)
-		{
-			proposicoesAtomicas = proposicoesAtomicas.replace("KC"+Integer.toString(n), kc);
-			n++;
-		}
-		for( String vaux : lstVAUX)
-		{
-			proposicoesAtomicas = proposicoesAtomicas.replace("VAUX"+Integer.toString(o), vaux);
-			o++;
-		}
-		
-		// Neste momento eu tenho a string proposicoesAtomicas com todas as proposições atomicas. Vou separar elas em proposicoes atomicas.
-		String proposicoesAtomicasEnriquecidas = Heuristica.enriquecerComFexTexto(proposicoesAtomicas);
-		// Agora eu tenho uma lista de DuplaTextoProcessado com todas as proposições atômicas.
-		List<DuplaTextoProcessado> listDuplas = DuplaTextoProcessado.processaTexto(proposicoesAtomicasEnriquecidas);
+		proposicoesAtomicas = proposicoesAtomicas.trim();
+		List<DuplaTextoProcessado> listDuplas = DuplaTextoProcessado.recuperaTagsDaString(proposicoesAtomicas, _corpo);	
 		List<ProposicaoMolecular> listMol = Proposicao.obtemListaDeProposicoes(listDuplas);
-		lst = Proposicao.obtemProposicoesAtomicas(listMol, dicionarioConec);
+		
+		for ( ProposicaoMolecular mol : listMol)
+		{
+			lst.addAll(mol.getListadeProposicoesAtomicas(dicionarioPadroes, dicionarioConec));
+		}
+		
 		return lst;
 	}
+	
 	
 	/**
 	 *  < Obsoleto >

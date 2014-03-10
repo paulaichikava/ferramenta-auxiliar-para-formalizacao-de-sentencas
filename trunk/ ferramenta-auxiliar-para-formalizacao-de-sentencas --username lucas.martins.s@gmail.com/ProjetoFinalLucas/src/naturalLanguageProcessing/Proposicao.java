@@ -19,6 +19,35 @@ public abstract class Proposicao
 		return DuplaTextoProcessado.convertListDuplaProcessadoToString(_corpo);
 	}
 	
+	/**
+	 * 
+	 * @param p
+	 * @return
+	 */
+	protected Boolean isAtomic(Proposicao p)
+	{
+		int a = 0;
+		int b = 0;
+		for ( DuplaTextoProcessado dp : p._corpo )
+		{
+			if ( dp._tag.equals("KC") )
+				return false;
+			// Daqui para baixo serve para pegar caso Se -> Entao
+			else if ( dp._palavra.equals("Se"))
+				a++;
+			else if ( dp._palavra.equals("entao"))
+			{
+				if( a > 0 )
+					b++;
+			}
+		}		
+		if ( b > 0)
+		{
+			b = 0; a = 0;
+			return false;
+		}
+		return true;
+	}
 	
 	
 	// ### Métodos estáticos a partir daqui.
@@ -41,7 +70,7 @@ public abstract class Proposicao
 				if ( proposicao._corpo.get(0)._palavra.equals(" "))// Removo o espaco no inicio da proposicao.
 					proposicao._corpo.remove(0);
 				
-				atomicas.add(new ProposicaoAtomica(null, proposicao._corpo));
+				atomicas.add(new ProposicaoAtomica(proposicao._corpo));
 			}
 			 
 		}
@@ -87,6 +116,7 @@ public abstract class Proposicao
 		
 		return frases;
 	}
-
+	
+	
 	
 }

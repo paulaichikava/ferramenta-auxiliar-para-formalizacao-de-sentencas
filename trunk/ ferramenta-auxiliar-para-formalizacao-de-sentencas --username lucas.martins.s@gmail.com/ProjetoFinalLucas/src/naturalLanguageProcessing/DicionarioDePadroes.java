@@ -66,7 +66,7 @@ public class DicionarioDePadroes
 		
 		//#####   Casos Hard Coded.  ####
 		
-		// Caso #1: Maria e Jorge gostam de novela.    ->  Maria KC Jorge V de novela
+		// Caso #1: Maria e Jorge gostam de novela.    ->  Maria KC Jorge V de novela.
 		List<String> lista = new ArrayList<String>();
 		lista.add("KC0.*(?=V0)"); // Match "KC0 Jorge "
 		lista.add(".*?(?<=KC0) "); // Match "Maria KC0 "
@@ -75,7 +75,7 @@ public class DicionarioDePadroes
 		_listTags.add(a1);
 		_numeroProposicaoTagNoMap++;
 		
-		// Caso #2: Lucas e Matheus foram jogar bola.
+		// Caso #2: Lucas e Matheus foram jogar bola.  -> Lucas KC Matheus VAUX V bola.
 		lista = new ArrayList<String>();
 		lista.add("KC0.*(?=VAUX0)"); // Match "KC0 Matheus "
 		lista.add(".*?(?<=KC0) "); // Match "Lucas KC0 "
@@ -84,6 +84,15 @@ public class DicionarioDePadroes
 		_listTags.add(a2);
 		_numeroProposicaoTagNoMap++;
 		
+//		// Caso #3: Se Lucas foi jogar bola logo Matheus foi jogar bola.  -> Lucas KC Matheus VAUX V bola.
+//		lista = new ArrayList<String>();
+//		lista.add("KC0.*(?=VAUX0)"); // Match "KC0 Matheus "
+//		lista.add(".*?(?<=KC0) "); // Match "Lucas KC0 "
+//		ProposicaoTag a2 = new ProposicaoTag(".*? KC .*? VAUX V .*?\\.", lista, "p ^ q");
+//		_map.put(_numeroProposicaoTagNoMap,a2);
+//		_listTags.add(a2);
+//		_numeroProposicaoTagNoMap++;
+//		
 		
 	}
 	

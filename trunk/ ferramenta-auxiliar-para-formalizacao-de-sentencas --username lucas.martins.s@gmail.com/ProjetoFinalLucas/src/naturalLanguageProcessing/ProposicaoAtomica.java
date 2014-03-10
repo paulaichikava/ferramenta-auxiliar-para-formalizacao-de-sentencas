@@ -22,9 +22,8 @@ public class ProposicaoAtomica extends Proposicao
 		_corpo = new ArrayList<DuplaTextoProcessado>(proposicaoTotal);
 	}
 
-	public ProposicaoAtomica( DuplaTextoProcessado verbo, List<DuplaTextoProcessado> corpo)
+	public ProposicaoAtomica( List<DuplaTextoProcessado> corpo)
 	{
-		_verbo = verbo;
 		_corpo = corpo;
 	}
 }
