@@ -62,8 +62,9 @@ public class DicionarioDePadroes
 		
 		// Ao fazer casos Hard Coded!!!
 		// #### IMPORTANTE !!!!!  =====>  Os KC's e V's devem ser sempre numerados começando de 0. Para serem adicionados a lista que obterá as proposições atômicas. ####
-		// Importante 2: Casos devem ser adicionados na sua devida ordem de importancia. ( Numeros de "tags" ( KC, VAUX, V) usados.) 
-		// Casos somente podem ser quebrados em 2 proposicoes atomicas.
+		// Importante 2: Casos devem ser adicionados na sua devida ordem de importancia. ( Numeros de "tags" ( KC, VAUX, V) usados.) Quanto maior a prioridade do caso mais abaixo ele deve ser adicionado.
+		// Importante 3: Casos somente podem ser quebrados em 2 proposicoes atomicas.
+		// Importante 4: Casos como <Se Entao> e <Se e Somente Se> devem ter prioridade. ( Acredito que por causa da transitividade)
 		
 		//#####   Casos Hard Coded.  ####
 		
@@ -71,7 +72,7 @@ public class DicionarioDePadroes
 		List<String> lista = new ArrayList<String>();
 		lista.add("KC0.*(?=V0)"); // Match "KC0 Jorge "
 		lista.add(".*?(?<=KC0) "); // Match "Maria KC0 "
-		ProposicaoTag a1 = new ProposicaoTag(".*? KC .*? V .*?\\.", lista, "^");
+		ProposicaoTag a1 = new ProposicaoTag(".*? KC .*? V .*?\\.", lista, "EOU");
 		_map.put(_numeroProposicaoTagNoMap,a1);
 		_listTags.add(a1);
 		_numeroProposicaoTagNoMap++;
@@ -80,7 +81,7 @@ public class DicionarioDePadroes
 		lista = new ArrayList<String>();
 		lista.add("KC0.*(?=VAUX0)"); // Match "KC0 Matheus "
 		lista.add(".*?(?<=KC0) "); // Match "Lucas KC0 "
-		ProposicaoTag a2 = new ProposicaoTag(".*? KC .*? VAUX V .*?\\.", lista, "^");
+		ProposicaoTag a2 = new ProposicaoTag(".*? KC .*? VAUX V .*?\\.", lista, "EOU");
 		_map.put(_numeroProposicaoTagNoMap,a2);
 		_listTags.add(a2);
 		_numeroProposicaoTagNoMap++;
@@ -89,7 +90,7 @@ public class DicionarioDePadroes
 		lista = new ArrayList<String>();
 		lista.add("KC0.*(?=\\.)"); // Match "KC0 Matheus "
 		lista.add("(?<=,) .*?(?<=KC0) "); // Match "Lucas KC0 "
-		ProposicaoTag a3 = new ProposicaoTag("VAUX V .*?,.*?KC.*?\\.", lista, "^");
+		ProposicaoTag a3 = new ProposicaoTag("VAUX V .*?,.*?KC.*?\\.", lista, "EOU");
 		_map.put(_numeroProposicaoTagNoMap,a3);
 		_listTags.add(a3);
 		_numeroProposicaoTagNoMap++;

@@ -53,7 +53,7 @@ public class ProposicaoMolecular extends Proposicao
 			}
 		}
 		
-		// Não possuí conectivos a proposição é atomica.
+		// Não possuí conectivos a proposição é atomica. Ou temos um <Se Entao> ou <Se e somente se>
 		if ( _conectivos.size() == 0)
 		{
 			_conectivoPrincipal = null;
@@ -128,42 +128,9 @@ public class ProposicaoMolecular extends Proposicao
 	 */
 	public String createLogicForm(DicionarioDePadroes dicionarioPadroes, DicionarioDeConectivos dicionarioConec)
 	{	
-		// Caso base
-		if ( this.isAtomic(this) )
-		{
-			return "[X]";
-		}
+		String formaLogica = this.coreDaCriacaoDeFormasLogicas(dicionarioPadroes, dicionarioConec);
 		
-		String logicForm = "";
-		String operador = "";
-		// Obtenho string com as proposicoes atomicas nesse nivel.
-		String proposicoesAtomicas = this.getStringdeProposicoesAtomicasSemSeAprofundar(dicionarioPadroes, dicionarioConec);
-		// Transformo em uma lista de dupla texto processado.
-		List<DuplaTextoProcessado> listDuplas = DuplaTextoProcessado.recuperaTagsDaString(proposicoesAtomicas, _corpo);	
-		// Obtenho uma lista de proposicoes moleculares a partir da lista de DuplaTextoPocessado acima.
-		List<ProposicaoMolecular> listMol = Proposicao.obtemListaDeProposicoes(listDuplas);
-		
-		
-	    // Pattern é a ProposicaoTag desta proposição.
-		String idRegexp = this.IdentifyPattern(dicionarioPadroes);
-		ProposicaoTag Pattern = dicionarioPadroes.ObtemProposicaoTag(idRegexp);
-		
-		for ( ProposicaoMolecular p : listMol)
-		{
-			logicForm +=  p.createLogicForm(dicionarioPadroes, dicionarioConec) + " " +  Pattern.getOperadorLogico() + " " ;
-		}
-		
-		// Caso esteja com problemas para gerar a forma lógica correta checar se o operador que vc está usando não precisa ser escapado.
-		if ( Pattern.getOperadorLogico().equals("^"))
-			operador = "\\^";
-		else
-			operador = Pattern.getOperadorLogico();
-			
-		logicForm = logicForm.replaceFirst(operador+" $", "");
-		
-		logicForm = logicForm.trim();
-		
-		return logicForm;
+		return formaLogica;
 		
 	}
 	
@@ -290,6 +257,52 @@ public class ProposicaoMolecular extends Proposicao
 		return proposicoesAtomicas;
 	}
 	
+	private String coreDaCriacaoDeFormasLogicas(DicionarioDePadroes dicionarioPadroes, DicionarioDeConectivos dicionarioConec)
+	{
+		// Caso base
+		if ( this.isAtomic(this) )
+		{
+			return "[X]";
+		}
+		
+		String logicForm = "";
+		String operador = "";
+		// Obtenho string com as proposicoes atomicas nesse nivel.
+		String proposicoesAtomicas = this.getStringdeProposicoesAtomicasSemSeAprofundar(dicionarioPadroes, dicionarioConec);
+		// Transformo em uma lista de dupla texto processado.
+		List<DuplaTextoProcessado> listDuplas = DuplaTextoProcessado.recuperaTagsDaString(proposicoesAtomicas, _corpo);	
+		// Obtenho uma lista de proposicoes moleculares a partir da lista de DuplaTextoPocessado acima.
+		List<ProposicaoMolecular> listMol = Proposicao.obtemListaDeProposicoes(listDuplas);
+		
+		
+	    // Pattern é a ProposicaoTag desta proposição.
+		String idRegexp = this.IdentifyPattern(dicionarioPadroes);
+		ProposicaoTag Pattern = dicionarioPadroes.ObtemProposicaoTag(idRegexp);
+		
+		for ( ProposicaoMolecular p : listMol)
+		{
+			logicForm +=  p.createLogicForm(dicionarioPadroes, dicionarioConec) + " " +  Pattern.getOperadorLogico() + " " ;
+		}
+		
+		// Caso esteja com problemas para gerar a forma lógica correta checar se o operador que vc está usando não precisa ser escapado.
+		if ( Pattern.getOperadorLogico().equals("EOU"))
+		{
+			if ( !_conectivos.isEmpty() )
+			{
+				operador = _conectivos.get(0)._palavra;
+				_conectivos.remove(0);
+			}
+		}	
+		else
+			operador = Pattern.getOperadorLogico();
+			
+		logicForm = logicForm.replaceFirst(operador+" $", "");
+		
+		logicForm = logicForm.trim();
+		
+		return logicForm;
+		
+	}
 	/**
 	 *  < Obsoleto >
 	 * 
