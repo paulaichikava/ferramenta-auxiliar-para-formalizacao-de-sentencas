@@ -63,6 +63,7 @@ public class DicionarioDePadroes
 		// Ao fazer casos Hard Coded!!!
 		// #### IMPORTANTE !!!!!  =====>  Os KC's e V's devem ser sempre numerados começando de 0. Para serem adicionados a lista que obterá as proposições atômicas. ####
 		// Importante 2: Casos devem ser adicionados na sua devida ordem de importancia. ( Numeros de "tags" ( KC, VAUX, V) usados.) 
+		// Casos somente podem ser quebrados em 2 proposicoes atomicas.
 		
 		//#####   Casos Hard Coded.  ####
 		
@@ -70,7 +71,7 @@ public class DicionarioDePadroes
 		List<String> lista = new ArrayList<String>();
 		lista.add("KC0.*(?=V0)"); // Match "KC0 Jorge "
 		lista.add(".*?(?<=KC0) "); // Match "Maria KC0 "
-		ProposicaoTag a1 = new ProposicaoTag(".*? KC .*? V .*?\\.", lista, "p ^ q");
+		ProposicaoTag a1 = new ProposicaoTag(".*? KC .*? V .*?\\.", lista, "^");
 		_map.put(_numeroProposicaoTagNoMap,a1);
 		_listTags.add(a1);
 		_numeroProposicaoTagNoMap++;
@@ -79,9 +80,18 @@ public class DicionarioDePadroes
 		lista = new ArrayList<String>();
 		lista.add("KC0.*(?=VAUX0)"); // Match "KC0 Matheus "
 		lista.add(".*?(?<=KC0) "); // Match "Lucas KC0 "
-		ProposicaoTag a2 = new ProposicaoTag(".*? KC .*? VAUX V .*?\\.", lista, "p ^ q");
+		ProposicaoTag a2 = new ProposicaoTag(".*? KC .*? VAUX V .*?\\.", lista, "^");
 		_map.put(_numeroProposicaoTagNoMap,a2);
 		_listTags.add(a2);
+		_numeroProposicaoTagNoMap++;
+		
+		// Caso #3: Foram jogar bola, Lucas e Matheus.  -> VAUX V bola, Lucas KC Matheus.
+		lista = new ArrayList<String>();
+		lista.add("KC0.*(?=\\.)"); // Match "KC0 Matheus "
+		lista.add("(?<=,) .*?(?<=KC0) "); // Match "Lucas KC0 "
+		ProposicaoTag a3 = new ProposicaoTag("VAUX V .*?,.*?KC.*?\\.", lista, "^");
+		_map.put(_numeroProposicaoTagNoMap,a3);
+		_listTags.add(a3);
 		_numeroProposicaoTagNoMap++;
 		
 //		// Caso #3: Se Lucas foi jogar bola logo Matheus foi jogar bola.  -> Lucas KC Matheus VAUX V bola.

@@ -33,7 +33,7 @@ public class Heuristica
 	public String formaLogicaDaProposicao(int n)
 	{
 		ProposicaoMolecular prop = _proposicoes.get(n);
-		return prop.createLogicForm(_dicionarioPadroes);		
+		return prop.createLogicForm(_dicionarioPadroes,_dicionarioConectivos);		
 	}
 	
 	public List<ProposicaoAtomica> proposicoesAtomicasDaProposicao(int n)

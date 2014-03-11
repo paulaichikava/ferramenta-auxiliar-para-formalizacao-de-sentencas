@@ -126,14 +126,44 @@ public class ProposicaoMolecular extends Proposicao
 	 * @param dicionario
 	 * @return
 	 */
-	public String createLogicForm(DicionarioDePadroes dicionario)
-	{
+	public String createLogicForm(DicionarioDePadroes dicionarioPadroes, DicionarioDeConectivos dicionarioConec)
+	{	
+		// Caso base
+		if ( this.isAtomic(this) )
+		{
+			return "[X]";
+		}
+		
+		String logicForm = "";
+		String operador = "";
+		// Obtenho string com as proposicoes atomicas nesse nivel.
+		String proposicoesAtomicas = this.getStringdeProposicoesAtomicasSemSeAprofundar(dicionarioPadroes, dicionarioConec);
+		// Transformo em uma lista de dupla texto processado.
+		List<DuplaTextoProcessado> listDuplas = DuplaTextoProcessado.recuperaTagsDaString(proposicoesAtomicas, _corpo);	
+		// Obtenho uma lista de proposicoes moleculares a partir da lista de DuplaTextoPocessado acima.
+		List<ProposicaoMolecular> listMol = Proposicao.obtemListaDeProposicoes(listDuplas);
+		
+		
 	    // Pattern é a ProposicaoTag desta proposição.
-		String idRegexp = IdentifyPattern(dicionario);
+		String idRegexp = this.IdentifyPattern(dicionarioPadroes);
+		ProposicaoTag Pattern = dicionarioPadroes.ObtemProposicaoTag(idRegexp);
 		
-		ProposicaoTag t = dicionario.ObtemProposicaoTag(idRegexp);
+		for ( ProposicaoMolecular p : listMol)
+		{
+			logicForm +=  p.createLogicForm(dicionarioPadroes, dicionarioConec) + " " +  Pattern.getOperadorLogico() + " " ;
+		}
 		
-		return t.getLogicFormDestaProposicaoTag();
+		// Caso esteja com problemas para gerar a forma lógica correta checar se o operador que vc está usando não precisa ser escapado.
+		if ( Pattern.getOperadorLogico().equals("^"))
+			operador = "\\^";
+		else
+			operador = Pattern.getOperadorLogico();
+			
+		logicForm = logicForm.replaceFirst(operador+" $", "");
+		
+		logicForm = logicForm.trim();
+		
+		return logicForm;
 		
 	}
 	
@@ -153,6 +183,32 @@ public class ProposicaoMolecular extends Proposicao
 			lst.add(new ProposicaoAtomica(_corpo));
 			return lst;
 		}
+		// Obtenho string com as proposicoes atomicas nesse nivel.
+		String proposicoesAtomicas = this.getStringdeProposicoesAtomicasSemSeAprofundar(dicionarioPadroes, dicionarioConec);
+		// Transformo em uma lista de dupla texto processado.
+		List<DuplaTextoProcessado> listDuplas = DuplaTextoProcessado.recuperaTagsDaString(proposicoesAtomicas, _corpo);	
+		// Obtenho uma lista de proposicoes moleculares a partir da lista de DuplaTextoPocessado acima.
+		List<ProposicaoMolecular> listMol = Proposicao.obtemListaDeProposicoes(listDuplas);
+		
+		// Para cada proposicao molecular da lista acima chamo esta função novamente.
+		for ( ProposicaoMolecular mol : listMol)
+		{
+			lst.addAll(mol.getListadeProposicoesAtomicas(dicionarioPadroes, dicionarioConec));
+		}
+		
+		return lst;
+	}
+	
+	/**
+	 *    Este método obtem uma String com todas as expressoes atomicas que consigo capturar sem me aprofundar. (  Sem usar recurssão )
+	 *    Exemplo:
+	 *            Maria e Jorge e Roberto compram doces. Me retornará: " Maria compram doces. Jorge e Roberto compram doces. "
+	 * @param dicionarioPadroes
+	 * @param dicionarioConec
+	 * @return
+	 */
+	private String getStringdeProposicoesAtomicasSemSeAprofundar(DicionarioDePadroes dicionarioPadroes, DicionarioDeConectivos dicionarioConec)
+	{
 		String corpo = "";
 		// Monto uma string com todas as palavras do corpo da proposicao. É adicionado o número das proposicões.
 		int m = 0; int n = 0; int o = 0;
@@ -207,7 +263,7 @@ public class ProposicaoMolecular extends Proposicao
 		for ( int i = 0; i < numeroDeProposicoes; i++) 
 		{
 			// Obtem a primeira Proposicao
-			proposicoesAtomicas += " " + corpo.replaceFirst(Pattern.getRexpForNprop(i), "");
+			proposicoesAtomicas += " " + corpo.replaceFirst(Pattern.getRexpForNprop(i), " ");
 			
 			// Devo trocar os nomes KC0, KC1 e etc.. pelos conectivos e os Verbos V0, V1, e etc.. pelos verbos
 			m = 0; n = 0; o = 0;
@@ -230,17 +286,9 @@ public class ProposicaoMolecular extends Proposicao
 		}
 		
 		proposicoesAtomicas = proposicoesAtomicas.trim();
-		List<DuplaTextoProcessado> listDuplas = DuplaTextoProcessado.recuperaTagsDaString(proposicoesAtomicas, _corpo);	
-		List<ProposicaoMolecular> listMol = Proposicao.obtemListaDeProposicoes(listDuplas);
-		
-		for ( ProposicaoMolecular mol : listMol)
-		{
-			lst.addAll(mol.getListadeProposicoesAtomicas(dicionarioPadroes, dicionarioConec));
-		}
-		
-		return lst;
+		proposicoesAtomicas = proposicoesAtomicas.replaceAll("  ", " ");
+		return proposicoesAtomicas;
 	}
-	
 	
 	/**
 	 *  < Obsoleto >
