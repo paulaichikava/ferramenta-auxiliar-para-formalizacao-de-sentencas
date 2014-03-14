@@ -31,6 +31,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
+import naturalLanguageProcessing.GerenciadorDeSimbolos;
 import naturalLanguageProcessing.ProposicaoAtomica;
 import naturalLanguageProcessing.DuplaTextoProcessado;
 import naturalLanguageProcessing.Heuristica;
@@ -116,9 +117,9 @@ public class Application {
 			public void mouseClicked(MouseEvent arg0) 
 			{
 			//	JOptionPane.showMessageDialog(null, "My Goodness, this is so concise");
-				char q = 112;
 				handler = FEXT_Handler.getInstance();
-				String answer = handler.EnrichText(txtInput.getText());
+				String answer =  handler.EnrichText(txtInput.getText());
+				GerenciadorDeSimbolos ger;
 				_heuristica = new Heuristica(answer);
 				List<ProposicaoMolecular> propMol = new ArrayList<ProposicaoMolecular>(_heuristica.getProposicoes());
 				String resp = "";
@@ -129,13 +130,13 @@ public class Application {
 					resp += "Temos:" + _heuristica.formaLogicaDaProposicao(i) + "\n";
 					resp += "Onde:" + "\n";
 					List<ProposicaoAtomica> propAtm = _heuristica.proposicoesAtomicasDaProposicao(i);
+					ger = GerenciadorDeSimbolos.getInstance();
 					for ( ProposicaoAtomica p : propAtm)
 					{
-						char a = q;
-						resp += Character.toString(a)+ ": "+ p.getCorpoDaProposicaoEmString()+ " ";
-						q++;
+						resp += ger.getSimboloDeProp(p) + ": "+ p.getCorpoDaProposicaoEmString()+ " ";
 					}
 					i++;	
+					resp += "\n\n";
 				}
 				textAreaResposta.setText(resp);
 				
