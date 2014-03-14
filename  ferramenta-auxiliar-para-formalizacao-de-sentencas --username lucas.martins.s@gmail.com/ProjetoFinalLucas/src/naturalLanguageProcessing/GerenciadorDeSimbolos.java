@@ -1,6 +1,5 @@
 package naturalLanguageProcessing;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,13 +13,15 @@ public class GerenciadorDeSimbolos
 {
 	
 	private static GerenciadorDeSimbolos _instance; // instancia do gerenciador
-	private Map<String, String> _map; // Map Simbulo -> Proposicao
-	private String _ultimoSimboloUsado; // Ultimo simbolo gerado.
+	private static Map<String, String> _mapSimboloProposicao; // Map Simbulo -> Proposicao
+	private static Map<String, String> _mapProposicaoSimbolo; // Map Simbulo -> Proposicao
+	private static String _ultimoSimboloUsado; // Ultimo simbolo gerado.
 
 	private GerenciadorDeSimbolos ()
 	{
-		_ultimoSimboloUsado = "q";
-		_map = new HashMap<String, String>();
+		_ultimoSimboloUsado = "p";
+		_mapSimboloProposicao = new HashMap<String, String>();
+		_mapProposicaoSimbolo = new HashMap<String, String>();
 	}
 	
 	
@@ -40,8 +41,16 @@ public class GerenciadorDeSimbolos
 		return _instance;
 	}
 	
-	public String geraSimbolo()
+	/**
+	 *    Gera um novo simbolo para ser atribuido a uma proposição.
+	 * @param proposicao proposição que eu uso para ter armazenada ao key que gerei.
+	 * @return
+	 */
+	public String geraSimbolo( String proposicao)
 	{
+		if ( _mapProposicaoSimbolo.containsKey(proposicao) )
+			return _mapProposicaoSimbolo.get(proposicao);
+		
 		char a = _ultimoSimboloUsado.charAt(_ultimoSimboloUsado.length() - 1);
 		a++;
 		if ( _ultimoSimboloUsado.length() == 1)
@@ -59,7 +68,14 @@ public class GerenciadorDeSimbolos
 			_ultimoSimboloUsado = _ultimoSimboloUsado.substring(0, _ultimoSimboloUsado.length()-2); //removo ultimo caracter
 			_ultimoSimboloUsado = _ultimoSimboloUsado + a + a;
 		}
-		
+		_mapSimboloProposicao.put(_ultimoSimboloUsado, proposicao);
+		_mapProposicaoSimbolo.put(proposicao, _ultimoSimboloUsado);
 		return _ultimoSimboloUsado;		
+	}
+	
+	public String getSimboloDeProp ( Proposicao p)
+	{
+		String str = p.getCorpoDaProposicaoEmString();
+		return _mapProposicaoSimbolo.get(str);
 	}
 }

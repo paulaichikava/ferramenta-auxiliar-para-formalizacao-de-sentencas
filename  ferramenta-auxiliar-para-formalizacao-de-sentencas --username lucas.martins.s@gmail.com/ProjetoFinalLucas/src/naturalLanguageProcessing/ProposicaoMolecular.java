@@ -16,26 +16,23 @@ public class ProposicaoMolecular extends Proposicao
 		_predicates = new ArrayList<DuplaTextoProcessado>();
 		_subjects = new ArrayList<DuplaTextoProcessado>();
 		_conectivos = new ArrayList<DuplaTextoProcessado>();
+		this.findConectivos();
 	}
 	
-	
 	/**
-	 *  < Obsoleto >
-	 *  Encontra sujeitos nesta frase. Enquanto isto sujeito são apenas nomes próprios.
-	 * 
+	 *  Este método procura todos os conectivos e popula corretamente a lista _conectivos.
 	 */
-	public void findSubjects()
+	public void findConectivos()
 	{
+		_conectivos.clear();
 		for ( DuplaTextoProcessado dp: _corpo)
 		{
-			if ( dp._tag.contains("NPROP")) 
+			if ( dp._tag.contains("KC")) // 
 			{
-				_subjects.add(dp); // Talvez eu coloque uma pergunta aqui!  ( Pergunta ao verbo: "Quem foi a praia?" )
+				_conectivos.add(dp); 
 			}
 		}
 	}
-	
-	
 	/**
 	 * 
 	 * Este método procura por todos os conectivos da proposição no dicionario e substitui os que conseguir encontrar.
@@ -45,6 +42,7 @@ public class ProposicaoMolecular extends Proposicao
 	 */
 	public void findAndChangeConectivos( DicionarioDeConectivos dicionario)
 	{
+		_conectivos.clear();
 		for ( DuplaTextoProcessado dp: _corpo)
 		{
 			if ( dp._tag.contains("KC")) // 
@@ -128,7 +126,17 @@ public class ProposicaoMolecular extends Proposicao
 	 */
 	public String createLogicForm(DicionarioDePadroes dicionarioPadroes, DicionarioDeConectivos dicionarioConec)
 	{	
+		GerenciadorDeSimbolos gerenciadorSimbolo = GerenciadorDeSimbolos.getInstance();
+		String simbolo = "";
 		String formaLogica = this.coreDaCriacaoDeFormasLogicas(dicionarioPadroes, dicionarioConec);
+		
+		// Substituo as proposicoes por simbolos.
+		List<ProposicaoAtomica> lst = this.getListadeProposicoesAtomicas(dicionarioPadroes, dicionarioConec);
+		for (ProposicaoAtomica pa : lst)
+		{
+			simbolo = gerenciadorSimbolo.geraSimbolo(pa.getCorpoDaProposicaoEmString());
+			formaLogica = formaLogica.replaceFirst("\\[X\\]", simbolo);
+		}
 		
 		return formaLogica;
 		
@@ -141,6 +149,7 @@ public class ProposicaoMolecular extends Proposicao
 	 */
 	public List<ProposicaoAtomica> getListadeProposicoesAtomicas(DicionarioDePadroes dicionarioPadroes, DicionarioDeConectivos dicionarioConec)
 	{
+	
 		// Teremos uma recursão aqui. Talvez esta linha abaixo tenha que ser um parametro!
 		List<ProposicaoAtomica> lst = new ArrayList<ProposicaoAtomica>();
 
@@ -279,23 +288,35 @@ public class ProposicaoMolecular extends Proposicao
 		String idRegexp = this.IdentifyPattern(dicionarioPadroes);
 		ProposicaoTag Pattern = dicionarioPadroes.ObtemProposicaoTag(idRegexp);
 		
-		for ( ProposicaoMolecular p : listMol)
-		{
-			logicForm +=  p.createLogicForm(dicionarioPadroes, dicionarioConec) + " " +  Pattern.getOperadorLogico() + " " ;
-		}
+		
 		
 		// Caso esteja com problemas para gerar a forma lógica correta checar se o operador que vc está usando não precisa ser escapado.
+		
 		if ( Pattern.getOperadorLogico().equals("EOU"))
 		{
+			//Este tratamento só acontece no caso EOU por ser um caso mais dificil de indentificar. Caso comum a E e ao OU.
 			if ( !_conectivos.isEmpty() )
 			{
 				operador = _conectivos.get(0)._palavra;
 				_conectivos.remove(0);
+				if ( operador.equals("e"))
+					operador = "^";
+				else
+					operador = "v";
 			}
 		}	
 		else
 			operador = Pattern.getOperadorLogico();
-			
+		
+		
+		for ( ProposicaoMolecular p : listMol)
+		{
+			logicForm +=  p.coreDaCriacaoDeFormasLogicas(dicionarioPadroes, dicionarioConec) + " " +  operador + " " ;
+		}
+		
+		if ( operador.equals("^")) 
+			operador = "\\^";
+					
 		logicForm = logicForm.replaceFirst(operador+" $", "");
 		
 		logicForm = logicForm.trim();
@@ -303,62 +324,5 @@ public class ProposicaoMolecular extends Proposicao
 		return logicForm;
 		
 	}
-	/**
-	 *  < Obsoleto >
-	 * 
-	 *  Encontra o verbo da proposição.
-	 */
-	public void findVerb()
-	{
-		for ( DuplaTextoProcessado dp: _corpo)
-		{
-			if ( dp._tag.contains("V"))
-			{
-				_verb =  dp; // Talvez eu coloque uma pergunta aqui!  ( "Este é mesmo o verbo?" )
-			}
-		}
-	}
-	
-	
-	/**
-	 *  < Obsoleto >
-	 *  
-	 *  Encontra os predicados da proposição.
-	 */
-	public void findPredicate()
-	{
-		List<DuplaTextoProcessado> auxList  = new ArrayList<DuplaTextoProcessado>(_corpo);
 		
-		// Se ainda não tiver encontrado o verbo e o sujeito. Eu encontro eles agora.
-		
-		if ( _verb ==  null)
-			findVerb();
-		if ( _subjects.size() == 0)
-			findSubjects();
-		
-		// Removo os sujeitos da minha frase.
-		for ( DuplaTextoProcessado sub : _subjects  )
-		{
-			auxList.remove(sub);
-		}
-		
-		
-		// Removo o verbo 
-		
-		auxList.remove(_verb);
-		
-		
-		// Acredito que tenha sobrado o predicado.
-		
-		for ( DuplaTextoProcessado dp: auxList)
-		{
-			if ( _corpo.indexOf(dp) > _corpo.indexOf(_verb) )  // Adiciono aos predicados todo mundo que sobrou e vem depois do verbo.
-				_predicates.add(dp);
-		}
-	}
-	
-	
-	
-
-	
 }
