@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  *  ### Sobre ###
@@ -69,28 +70,28 @@ public class DicionarioDePadroes
 		//#####   Casos Hard Coded.  ####
 		
 		// Caso #1: Maria e Jorge gostam de novela.    ->  Maria KC Jorge V de novela.
-		List<String> lista = new ArrayList<String>();
-		lista.add("KC0.*(?=V0)"); // Match "KC0 Jorge "
-		lista.add(".*?(?<=KC0) "); // Match "Maria KC0 "
-		ProposicaoTag a1 = new ProposicaoTag(".*? KC .*? V .*?\\.", lista, "EOU");
+		List<Pattern> lista = new ArrayList<Pattern>();
+		lista.add(Pattern.compile("KC0.*(?=V0)")); // Match "KC0 Jorge "
+		lista.add(Pattern.compile(".*?(?<=KC0) ")); // Match "Maria KC0 "
+		ProposicaoTag a1 = new ProposicaoTag(".*? KC .*? V .*?\\.", lista, "EOU", 1);
 		_map.put(_numeroProposicaoTagNoMap,a1);
 		_listTags.add(a1);
 		_numeroProposicaoTagNoMap++;
 		
 		// Caso #2: Lucas e Matheus foram jogar bola.  -> Lucas KC Matheus VAUX V bola.
-		lista = new ArrayList<String>();
-		lista.add("KC0.*(?=VAUX0)"); // Match "KC0 Matheus "
-		lista.add(".*?(?<=KC0) "); // Match "Lucas KC0 "
-		ProposicaoTag a2 = new ProposicaoTag(".*? KC .*? VAUX V .*?\\.", lista, "EOU");
+		lista = new ArrayList<Pattern>();
+		lista.add(Pattern.compile("KC0.*(?=VAUX0)")); // Match "KC0 Matheus "
+		lista.add(Pattern.compile(".*?(?<=KC0) ")); // Match "Lucas KC0 "
+		ProposicaoTag a2 = new ProposicaoTag(".*? KC .*? VAUX V .*?\\.", lista, "EOU", 1);
 		_map.put(_numeroProposicaoTagNoMap,a2);
 		_listTags.add(a2);
 		_numeroProposicaoTagNoMap++;
 		
 		// Caso #3: Foram jogar bola, Lucas e Matheus.  -> VAUX V bola, Lucas KC Matheus.
-		lista = new ArrayList<String>();
-		lista.add("KC0.*(?=\\.)"); // Match "KC0 Matheus "
-		lista.add("(?<=,) .*?(?<=KC0) "); // Match "Lucas KC0 "
-		ProposicaoTag a3 = new ProposicaoTag("VAUX V .*?,.*?KC.*?\\.", lista, "EOU");
+		lista = new ArrayList<Pattern>();
+		lista.add(Pattern.compile("KC0.*(?=\\.)")); // Match "KC0 Matheus "
+		lista.add(Pattern.compile("(?<=,) .*?(?<=KC0) ")); // Match "Lucas KC0 "
+		ProposicaoTag a3 = new ProposicaoTag("VAUX V .*?,.*?KC.*?\\.", lista, "EOU", 1);
 		_map.put(_numeroProposicaoTagNoMap,a3);
 		_listTags.add(a3);
 		_numeroProposicaoTagNoMap++;

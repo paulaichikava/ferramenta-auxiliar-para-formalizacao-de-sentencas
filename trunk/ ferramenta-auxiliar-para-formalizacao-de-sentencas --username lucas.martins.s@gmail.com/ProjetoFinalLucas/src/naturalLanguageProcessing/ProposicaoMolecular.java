@@ -2,6 +2,7 @@ package naturalLanguageProcessing;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 
 public class ProposicaoMolecular extends Proposicao
 {
@@ -239,7 +240,23 @@ public class ProposicaoMolecular extends Proposicao
 		for ( int i = 0; i < numeroDeProposicoes; i++) 
 		{
 			// Obtem a primeira Proposicao
-			proposicoesAtomicas += " " + corpo.replaceFirst(Pattern.getRexpForNprop(i), " ");
+			Matcher matcher = Pattern.getRexpForNprop(i).matcher(corpo); // Realizo o Match
+			if (matcher.find()) // Se consegui sucesso
+			{
+				// Agora testo para cada caso. ( 1 ou 0 respectivamente, Extracao ou uso do match puro)
+				if ( Pattern.getTipoDeExtracao() == 1)
+				{
+					// Caso extraçao ( Usado em e's e ou's )
+					System.out.println(matcher.group(0));
+					proposicoesAtomicas += " " + corpo.replaceFirst(matcher.group(0), " "); // Faço o replace da string que obtive com o match.
+				}
+				else
+				{
+					// Caso uso do match
+					proposicoesAtomicas +=  " " + matcher.group(0); // Tenho que me certificar se dependerá do grupo 0 ou não.
+					
+				}
+			}
 			
 			// Devo trocar os nomes KC0, KC1 e etc.. pelos conectivos e os Verbos V0, V1, e etc.. pelos verbos
 			m = 0; n = 0; o = 0;
