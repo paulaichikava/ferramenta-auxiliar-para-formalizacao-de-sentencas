@@ -33,9 +33,9 @@ public abstract class Proposicao
 			if ( dp._tag.equals("KC") )
 				return false;
 			// Daqui para baixo serve para pegar caso Se -> Entao
-			else if ( dp._palavra.equals("Se"))
+			else if ( dp._tag.equals("KS"))
 				a++;
-			else if ( dp._palavra.equals("entao"))
+			else if ( dp._tag.equals("ADV"))
 			{
 				if( a > 0 )
 					b++;

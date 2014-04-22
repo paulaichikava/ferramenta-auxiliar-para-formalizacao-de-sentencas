@@ -7,7 +7,7 @@ public class ProposicaoTag
 {
 	private String _matchCorpo; // Representa como a expressão é estruturada para a lista de regExp ( _listaRegExpDeProposicoesAtomicas) conseguir capturar as suas proposições atômicas.
 	private List<Pattern> _listaRegExpDeProposicoesAtomicas;
-	private int _tipoDeExtracao; // Aqui eu defino se poso usar o match para conseguir exatamente o que quero ou se preciso subtrair ele da string "pai". Caso esse int seja 1 subtraio, caso 0 uso o match puro.
+	private int _tipoDeExtracao; // Aqui eu defino se poso usar o match para conseguir exatamente o que quero ou se preciso subtrair ele da string "pai". Caso esse int seja -1 subtraio, caso contrario uso o match de ordem N.
 	private String _operadorLogico; // A logic form é a forma lógica dessa ProposicaoTag, ela representa cada proposicao atomica na mesma ordem que ela é descria na listaRegExpDeProposicoesAtomicas.
 	
 	public ProposicaoTag( String id, List<Pattern> lista, String Logic , int tipo )
