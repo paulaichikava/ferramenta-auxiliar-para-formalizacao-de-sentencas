@@ -95,7 +95,8 @@ public class ProposicaoMolecular extends Proposicao
 		// Monto uma string com todas as palavras do corpo da proposicao.
 		for ( DuplaTextoProcessado dp: _corpo)
 		{
-			if ( dp._tag.equals("V") || dp._tag.equals("KC") || dp._tag.equals("VAUX"))
+			if ( dp._tag.equals("V") || dp._tag.equals("KC") || dp._tag.equals("VAUX") || dp._tag.equals("KS") || dp._tag.equals("ADV") || dp._tag.equals("PROPESS") || dp._tag.equals("PDEN")
+					|| dp._tag.equals("NPROP"))
 				proposicao += dp._tag;
 			else
 				proposicao += dp._palavra;
@@ -188,10 +189,15 @@ public class ProposicaoMolecular extends Proposicao
 	{
 		String corpo = "";
 		// Monto uma string com todas as palavras do corpo da proposicao. É adicionado o número das proposicões.
-		int m = 0; int n = 0; int o = 0;
+		int m = 0; int n = 0; int o = 0; int p = 0; int q = 0; int r = 0; int s = 0; int t = 0 ;
 		List<String> lstV = new ArrayList<String>();
 		List<String> lstKC = new ArrayList<String>();
 		List<String> lstVAUX = new ArrayList<String>();
+		List<String> lstKS = new ArrayList<String>();
+		List<String> lstADV = new ArrayList<String>();
+		List<String> lstNPROP = new ArrayList<String>();
+		List<String> lstPROPESS = new ArrayList<String>();
+		List<String> lstPDEN = new ArrayList<String>();
 		for ( DuplaTextoProcessado dp: _corpo)
 		{
 			if ( dp._tag.equals("V") )
@@ -214,6 +220,41 @@ public class ProposicaoMolecular extends Proposicao
 				corpo += dp._tag + Integer.toString(o);
 				lstVAUX.add(dp._palavra);
 				o++;
+			}
+			else if (dp._tag.equals("KS") )
+			{
+				corpo += " ";
+				corpo += dp._tag + Integer.toString(p);
+				lstKS.add(dp._palavra);
+				p++;
+			}
+			else if (dp._tag.equals("ADV") )
+			{
+				corpo += " ";
+				corpo += dp._tag + Integer.toString(q);
+				lstADV.add(dp._palavra);
+				q++;
+			}
+			else if (dp._tag.equals("NPROP") )
+			{
+				corpo += " ";
+				corpo += dp._tag + Integer.toString(r);
+				lstNPROP.add(dp._palavra);
+				r++;
+			}
+			else if (dp._tag.equals("PROPESS") )
+			{
+				corpo += " ";
+				corpo += dp._tag + Integer.toString(s);
+				lstPROPESS.add(dp._palavra);
+				s++;
+			}
+			else if (dp._tag.equals("PDEN") )
+			{
+				corpo += " ";
+				corpo += dp._tag + Integer.toString(t);
+				lstPDEN.add(dp._palavra);
+				t++;
 			}
 			else if (dp._tag.equals("\\."))
 				corpo += dp._palavra;	
@@ -244,7 +285,7 @@ public class ProposicaoMolecular extends Proposicao
 			if (matcher.find()) // Se consegui sucesso
 			{
 				// Agora testo para cada caso. ( 1 ou 0 respectivamente, Extracao ou uso do match puro)
-				if ( Pattern.getTipoDeExtracao() == 1)
+				if ( Pattern.getTipoDeExtracao() == -1)
 				{
 					// Caso extraçao ( Usado em e's e ou's )
 					System.out.println(matcher.group(0));
@@ -253,27 +294,62 @@ public class ProposicaoMolecular extends Proposicao
 				else
 				{
 					// Caso uso do match
-					proposicoesAtomicas +=  " " + matcher.group(0); // Tenho que me certificar se dependerá do grupo 0 ou não.
+					proposicoesAtomicas +=  " " + matcher.group(Pattern.getTipoDeExtracao()); // Tenho que me certificar se dependerá do grupo 0 ou não.
 					
 				}
 			}
+			else
+				System.out.println("Nao consegui dar match nessa frase!");
 			
 			// Devo trocar os nomes KC0, KC1 e etc.. pelos conectivos e os Verbos V0, V1, e etc.. pelos verbos
-			m = 0; n = 0; o = 0;
+			m = 0; n = 0; o = 0; p = 0; q = 0; r = 0; s = 0; t = 0;
 			for( String v : lstV)
 			{
-				proposicoesAtomicas = proposicoesAtomicas.replace("V"+Integer.toString(m), v);
+				proposicoesAtomicas = proposicoesAtomicas.replace(" V"+Integer.toString(m), " " + v);
 				m++;
 			}
 			for( String kc : lstKC)
 			{
-				proposicoesAtomicas = proposicoesAtomicas.replace("KC"+Integer.toString(n), kc);
+				proposicoesAtomicas = proposicoesAtomicas.replace(" KC"+Integer.toString(n), " " + kc);
 				n++;
 			}
 			for( String vaux : lstVAUX)
 			{
-				proposicoesAtomicas = proposicoesAtomicas.replace("VAUX"+Integer.toString(o), vaux);
+				proposicoesAtomicas = proposicoesAtomicas.replace(" VAUX"+Integer.toString(o), " " + vaux);
 				o++;
+			}
+			for( String ks : lstKS)
+			{
+				proposicoesAtomicas = proposicoesAtomicas.replace(" KS"+Integer.toString(p), " " + ks);
+				p++;
+			}
+			for( String adv : lstADV)
+			{
+				proposicoesAtomicas = proposicoesAtomicas.replace(" ADV"+Integer.toString(q), " " + adv);
+				q++;
+			}
+			for( String nprop : lstNPROP)
+			{
+				proposicoesAtomicas = proposicoesAtomicas.replace(" NPROP"+Integer.toString(r), " " + nprop);
+				r++;
+			}
+			for( String propess : lstPROPESS)
+			{
+				proposicoesAtomicas = proposicoesAtomicas.replace(" PROPESS"+Integer.toString(s), " " + propess);
+				s++;
+			}
+			for( String pden : lstPDEN)
+			{
+				proposicoesAtomicas = proposicoesAtomicas.replace(" PDEN"+Integer.toString(t), " " + pden);
+				t++;
+			}
+			
+			// Devo checar se fechei a proposicao adicionando um '.' caso nao exista.
+			
+			String proposicoesAtomicasSemEspacos = proposicoesAtomicas.replace(" ", "");
+			if ( proposicoesAtomicasSemEspacos.charAt(proposicoesAtomicasSemEspacos.length()-1) != '.')
+			{
+				proposicoesAtomicas = proposicoesAtomicas + '.';
 			}
 			
 		}
