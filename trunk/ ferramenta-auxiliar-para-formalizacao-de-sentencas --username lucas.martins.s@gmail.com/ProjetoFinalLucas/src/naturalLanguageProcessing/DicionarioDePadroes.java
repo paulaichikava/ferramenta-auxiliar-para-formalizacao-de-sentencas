@@ -74,12 +74,21 @@ public class DicionarioDePadroes
 		//#####   Casos Hard Coded.  ####
 		
 		
+		// Caso #5: Maria gosta de novela ou Jorge gosta de novela.  -> Maria V de novela KC Jorge V de novela.
+		lista = new ArrayList<Pattern>();
+		lista.add(Pattern.compile(".*?(?=KC0)")); // Match "Maria V0 de novela"
+		lista.add(Pattern.compile("(?<=KC0).*?$")); // Match " Jorge V0 de novela."
+		ProposicaoTag a5 = new ProposicaoTag(".*?V.*?KC.*?$", lista, "EOU",0);
+		_map.put(_numeroProposicaoTagNoMap,a5);
+		_listTags.add(a5);
+		_numeroProposicaoTagNoMap++;
 		
 		// Caso #1: Maria e Jorge gostam de novela.    ->  Maria KC Jorge V de novela.
 		lista = new ArrayList<Pattern>();
 		lista.add(Pattern.compile("KC0.*(?=V0)")); // Match "KC0 Jorge "
 		lista.add(Pattern.compile(".*?(?<=KC0) ")); // Match "Maria KC0 "
-		ProposicaoTag a1 = new ProposicaoTag(".*? KC .*? V .*?\\.", lista, "EOU", -1);
+		//ProposicaoTag a1 = new ProposicaoTag(".*? KC .*? V .*?\\.", lista, "EOU", -1);
+		ProposicaoTag a1 = new ProposicaoTag("NPROP KC NPROP .*?V .*?\\.", lista, "EOU", -1);
 		_map.put(_numeroProposicaoTagNoMap,a1);
 		_listTags.add(a1);
 		_numeroProposicaoTagNoMap++;
@@ -88,7 +97,8 @@ public class DicionarioDePadroes
 		lista = new ArrayList<Pattern>();
 		lista.add(Pattern.compile("KC0.*(?=VAUX0)")); // Match "KC0 Matheus "
 		lista.add(Pattern.compile(".*?(?<=KC0) ")); // Match "Lucas KC0 "
-		ProposicaoTag a2 = new ProposicaoTag(".*? KC .*? VAUX V .*?\\.", lista, "EOU", -1);
+		//ProposicaoTag a2 = new ProposicaoTag(".*? KC .*? VAUX V .*?\\.", lista, "EOU", -1);
+		ProposicaoTag a2 = new ProposicaoTag("NPROP KC NPROP .*? VAUX V .*?\\.", lista, "EOU", -1);
 		_map.put(_numeroProposicaoTagNoMap,a2);
 		_listTags.add(a2);
 		_numeroProposicaoTagNoMap++;
@@ -111,14 +121,7 @@ public class DicionarioDePadroes
 		_listTags.add(a4);
 		_numeroProposicaoTagNoMap++;
 		
-		// Caso #5: Maria gosta de novela ou Jorge gosta de novela.  -> Maria V de novela KC Jorge V de novela.
-		lista = new ArrayList<Pattern>();
-		lista.add(Pattern.compile(".*?(?=KC0)")); // Match "Maria V0 de novela"
-		lista.add(Pattern.compile("(?<=KC0).*?$")); // Match " Jorge V0 de novela."
-		ProposicaoTag a5 = new ProposicaoTag(".*?V.*?KC.*?$", lista, "EOU",0);
-		_map.put(_numeroProposicaoTagNoMap,a5);
-		_listTags.add(a5);
-		_numeroProposicaoTagNoMap++;
+		
 		
 		// Caso #6: Maria comprará frango se e somente se tiver dinheiro.  -> NPROP V frango PROPESS KC PDEN PROPESS V dinheiro.
 		lista = new ArrayList<Pattern>();
