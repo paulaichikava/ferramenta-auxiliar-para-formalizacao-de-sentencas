@@ -74,7 +74,7 @@ public class DicionarioDePadroes
 		//#####   Casos Hard Coded.  ####
 		
 		
-		// Caso #5: Maria gosta de novela ou Jorge gosta de novela.  -> Maria V de novela KC Jorge V de novela.
+		// Caso #1: Maria gosta de novela ou Jorge gosta de novela.  -> Maria V de novela KC Jorge V de novela.
 		lista = new ArrayList<Pattern>();
 		lista.add(Pattern.compile(".*?(?=KC0)")); // Match "Maria V0 de novela"
 		lista.add(Pattern.compile("(?<=KC0).*?$")); // Match " Jorge V0 de novela."
@@ -83,7 +83,8 @@ public class DicionarioDePadroes
 		_listTags.add(a5);
 		_numeroProposicaoTagNoMap++;
 		
-		// Caso #1: Maria e Jorge gostam de novela.    ->  Maria KC Jorge V de novela.
+		
+		// Caso #2: Maria e Jorge gostam de novela.    ->  Maria KC Jorge V de novela.
 		lista = new ArrayList<Pattern>();
 		lista.add(Pattern.compile("KC0.*(?=V0)")); // Match "KC0 Jorge "
 		lista.add(Pattern.compile(".*?(?<=KC0) ")); // Match "Maria KC0 "
@@ -93,7 +94,8 @@ public class DicionarioDePadroes
 		_listTags.add(a1);
 		_numeroProposicaoTagNoMap++;
 		
-		// Caso #2: Lucas e Matheus foram jogar bola.  -> Lucas KC Matheus VAUX V bola.
+		
+		// Caso #3: Lucas e Matheus foram jogar bola.  -> Lucas KC Matheus VAUX V bola.
 		lista = new ArrayList<Pattern>();
 		lista.add(Pattern.compile("KC0.*(?=VAUX0)")); // Match "KC0 Matheus "
 		lista.add(Pattern.compile(".*?(?<=KC0) ")); // Match "Lucas KC0 "
@@ -103,7 +105,7 @@ public class DicionarioDePadroes
 		_listTags.add(a2);
 		_numeroProposicaoTagNoMap++;
 		
-		// Caso #3: Foram jogar bola, Lucas e Matheus.  -> VAUX V bola, Lucas KC Matheus.
+		// Caso #4: Foram jogar bola, Lucas e Matheus.  -> VAUX V bola, Lucas KC Matheus.
 		lista = new ArrayList<Pattern>();
 		lista.add(Pattern.compile("KC0.*(?=\\.)")); // Match "KC0 Matheus "
 		lista.add(Pattern.compile("(?<=,) .*?(?<=KC0) ")); // Match "Lucas KC0 "
@@ -112,7 +114,7 @@ public class DicionarioDePadroes
 		_listTags.add(a3);
 		_numeroProposicaoTagNoMap++;
 		
-		// Caso #4: Se Lucas foi jogar bola logo Matheus foi jogar bola.  -> KS Lucas VAUX V bola ADV Matheus VAUX V bola.
+		// Caso #5: Se Lucas foi jogar bola logo Matheus foi jogar bola.  -> KS Lucas VAUX V bola ADV Matheus VAUX V bola.
 		lista = new ArrayList<Pattern>();
 		lista.add(Pattern.compile("(?<=KS0 ).*? (?=ADV0)")); // Match "Lucas VAUX V bola"
 		lista.add(Pattern.compile("(?<=ADV0 ).*?\\.")); // Match "Matheus VAUX V bola."
@@ -120,8 +122,6 @@ public class DicionarioDePadroes
 		_map.put(_numeroProposicaoTagNoMap,a4);
 		_listTags.add(a4);
 		_numeroProposicaoTagNoMap++;
-		
-		
 		
 		// Caso #6: Maria comprará frango se e somente se tiver dinheiro.  -> NPROP V frango PROPESS KC PDEN PROPESS V dinheiro.
 		lista = new ArrayList<Pattern>();
@@ -131,6 +131,16 @@ public class DicionarioDePadroes
 		_map.put(_numeroProposicaoTagNoMap,a6);
 		_listTags.add(a6);
 		_numeroProposicaoTagNoMap++;
+		
+		// Caso #7: A menos que o carro seja novo o motor nao precisa de revisao.  -> KS KS KS o N V novo o motor ADV V de revisao.
+		lista = new ArrayList<Pattern>();
+		lista.add(Pattern.compile("N.*? (?=ART)")); // Match "N V novo"
+		lista.add(Pattern.compile("(?<=ART[1-9] ).*?$")); // Match "N ADV V de revisao."
+		ProposicaoTag a7 = new ProposicaoTag("KS\\s*?KS\\s*?KS\\s*?ART .*? V .*? ADV .*?\\.", lista, "->",0);
+		_map.put(_numeroProposicaoTagNoMap,a7);
+		_listTags.add(a7);
+		_numeroProposicaoTagNoMap++;
+	
 		
 //		// Caso #7:Maria gosta de frango e Maria comprou frango se e somente se tem dinheiro.  -> NPROP V de frango KC NPROP V frango PROPESS KC PDEN PROPESS V dinheiro.
 //		lista = new ArrayList<Pattern>();

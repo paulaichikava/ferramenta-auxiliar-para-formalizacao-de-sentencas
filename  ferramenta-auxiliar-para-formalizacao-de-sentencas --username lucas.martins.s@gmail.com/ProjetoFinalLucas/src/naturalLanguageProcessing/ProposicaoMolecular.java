@@ -96,7 +96,7 @@ public class ProposicaoMolecular extends Proposicao
 		for ( DuplaTextoProcessado dp: _corpo)
 		{
 			if ( dp._tag.equals("V") || dp._tag.equals("KC") || dp._tag.equals("VAUX") || dp._tag.equals("KS") || dp._tag.equals("ADV") || dp._tag.equals("PROPESS") || dp._tag.equals("PDEN")
-					|| dp._tag.equals("NPROP"))
+					|| dp._tag.equals("NPROP") || dp._tag.equals("ART") || dp._tag.equals("N"))
 				proposicao += dp._tag;
 			else
 				proposicao += dp._palavra;
@@ -189,7 +189,7 @@ public class ProposicaoMolecular extends Proposicao
 	{
 		String corpo = "";
 		// Monto uma string com todas as palavras do corpo da proposicao. É adicionado o número das proposicões.
-		int m = 0; int n = 0; int o = 0; int p = 0; int q = 0; int r = 0; int s = 0; int t = 0 ;
+		int m = 0; int n = 0; int o = 0; int p = 0; int q = 0; int r = 0; int s = 0; int t = 0 ; int u = 0 ; int v = 0 ;
 		List<String> lstV = new ArrayList<String>();
 		List<String> lstKC = new ArrayList<String>();
 		List<String> lstVAUX = new ArrayList<String>();
@@ -198,6 +198,8 @@ public class ProposicaoMolecular extends Proposicao
 		List<String> lstNPROP = new ArrayList<String>();
 		List<String> lstPROPESS = new ArrayList<String>();
 		List<String> lstPDEN = new ArrayList<String>();
+		List<String> lstN = new ArrayList<String>();
+		List<String> lstART = new ArrayList<String>();
 		for ( DuplaTextoProcessado dp: _corpo)
 		{
 			if ( dp._tag.equals("V") )
@@ -256,6 +258,20 @@ public class ProposicaoMolecular extends Proposicao
 				lstPDEN.add(dp._palavra);
 				t++;
 			}
+			else if (dp._tag.equals("N") )
+			{
+				corpo += " ";
+				corpo += dp._tag + Integer.toString(u);
+				lstN.add(dp._palavra);
+				u++;
+			}
+			else if (dp._tag.equals("ART") )
+			{
+				corpo += " ";
+				corpo += dp._tag + Integer.toString(v);
+				lstART.add(dp._palavra);
+				v++;
+			}
 			else if (dp._tag.equals("\\."))
 				corpo += dp._palavra;	
 			else
@@ -302,10 +318,10 @@ public class ProposicaoMolecular extends Proposicao
 				System.out.println("Nao consegui dar match nessa frase!");
 			
 			// Devo trocar os nomes KC0, KC1 e etc.. pelos conectivos e os Verbos V0, V1, e etc.. pelos verbos
-			m = 0; n = 0; o = 0; p = 0; q = 0; r = 0; s = 0; t = 0;
-			for( String v : lstV)
+			m = 0; n = 0; o = 0; p = 0; q = 0; r = 0; s = 0; t = 0; u = 0; v = 0;
+			for( String ve : lstV)
 			{
-				proposicoesAtomicas = proposicoesAtomicas.replace(" V"+Integer.toString(m), " " + v);
+				proposicoesAtomicas = proposicoesAtomicas.replace(" V"+Integer.toString(m), " " + ve);
 				m++;
 			}
 			for( String kc : lstKC)
@@ -342,6 +358,16 @@ public class ProposicaoMolecular extends Proposicao
 			{
 				proposicoesAtomicas = proposicoesAtomicas.replace(" PDEN"+Integer.toString(t), " " + pden);
 				t++;
+			}
+			for( String no : lstN)
+			{
+				proposicoesAtomicas = proposicoesAtomicas.replace(" N"+Integer.toString(u), " " + no);
+				u++;
+			}
+			for( String art : lstART)
+			{
+				proposicoesAtomicas = proposicoesAtomicas.replace(" ART"+Integer.toString(v), " " + art);
+				v++;
 			}
 			
 			// Devo checar se fechei a proposicao adicionando um '.' caso nao exista.
