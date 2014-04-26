@@ -74,7 +74,7 @@ public class DicionarioDePadroes
 		//#####   Casos Hard Coded.  ####
 		
 		
-		// Caso #1: Maria gosta de novela ou Jorge gosta de novela.  -> Maria V de novela KC Jorge V de novela.
+		// Caso #1: Maria gosta de novela ou Jorge gosta de novela.  -> NPROP V de N KC NPROP V de N.
 		lista = new ArrayList<Pattern>();
 		lista.add(Pattern.compile(".*?(?=KC0)")); // Match "Maria V0 de novela"
 		lista.add(Pattern.compile("(?<=KC0).*?$")); // Match " Jorge V0 de novela."
@@ -84,7 +84,7 @@ public class DicionarioDePadroes
 		_numeroProposicaoTagNoMap++;
 		
 		
-		// Caso #2: Maria e Jorge gostam de novela.    ->  Maria KC Jorge V de novela.
+		// Caso #2: Maria e Jorge gostam de novela.    ->  NPROP KC NPROP V de N.
 		lista = new ArrayList<Pattern>();
 		lista.add(Pattern.compile("KC0.*(?=V0)")); // Match "KC0 Jorge "
 		lista.add(Pattern.compile(".*?(?<=KC0) ")); // Match "Maria KC0 "
@@ -95,7 +95,7 @@ public class DicionarioDePadroes
 		_numeroProposicaoTagNoMap++;
 		
 		
-		// Caso #3: Lucas e Matheus foram jogar bola.  -> Lucas KC Matheus VAUX V bola.
+		// Caso #3: Lucas e Matheus foram jogar bola.  -> NPROP KC NPROP VAUX V N.
 		lista = new ArrayList<Pattern>();
 		lista.add(Pattern.compile("KC0.*(?=VAUX0)")); // Match "KC0 Matheus "
 		lista.add(Pattern.compile(".*?(?<=KC0) ")); // Match "Lucas KC0 "
@@ -105,7 +105,7 @@ public class DicionarioDePadroes
 		_listTags.add(a2);
 		_numeroProposicaoTagNoMap++;
 		
-		// Caso #4: Foram jogar bola, Lucas e Matheus.  -> VAUX V bola, Lucas KC Matheus.
+		// Caso #4: Foram jogar bola, Lucas e Matheus.  -> VAUX V N, NPROP KC NPROP.
 		lista = new ArrayList<Pattern>();
 		lista.add(Pattern.compile("KC0.*(?=\\.)")); // Match "KC0 Matheus "
 		lista.add(Pattern.compile("(?<=,) .*?(?<=KC0) ")); // Match "Lucas KC0 "
