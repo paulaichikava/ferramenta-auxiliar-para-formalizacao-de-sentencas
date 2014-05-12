@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *  Esta classe tem como objetivo gerencia os simbolos das proposicoes criadas 
+ *  Esta classe tem como objetivo gerenciar os simbolos das proposicoes criadas 
  *  para sempre gerar um simbolo novo para uma proposicao nova.
  * @author Lucas
  *
