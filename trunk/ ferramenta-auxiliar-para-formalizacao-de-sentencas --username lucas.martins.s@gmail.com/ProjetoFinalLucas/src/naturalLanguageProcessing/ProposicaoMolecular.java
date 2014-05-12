@@ -9,6 +9,7 @@ public class ProposicaoMolecular extends Proposicao
 
 	public List<DuplaTextoProcessado> _conectivos; // Conectivos
 	public String _conectivoPrincipal; // Conectivo Principal
+	private List<String> _tags;
 	
 	
 	public ProposicaoMolecular(List<DuplaTextoProcessado> corpo)
@@ -77,6 +78,7 @@ public class ProposicaoMolecular extends Proposicao
 						if ( dp2 == dp )
 							dp2._palavra = dicionario.ObtemConectivo(dp._palavra);
 					}
+					
 				}
 				
 			}
@@ -88,15 +90,14 @@ public class ProposicaoMolecular extends Proposicao
 	 * Este método procura comparar esta proposição molecular a algum padrão pré definido. Para assim formaliza-la.
 	 * 
 	 */
-	private String IdentifyPattern( DicionarioDePadroes dicionario)
+	private String IdentifyPattern( DicionarioDePadroes dicionario, GerenciadorDeTags gerenciador)
 	{
 		String proposicao = "";
 		
 		// Monto uma string com todas as palavras do corpo da proposicao.
 		for ( DuplaTextoProcessado dp: _corpo)
 		{
-			if ( dp._tag.equals("V") || dp._tag.equals("KC") || dp._tag.equals("VAUX") || dp._tag.equals("KS") || dp._tag.equals("ADV") || dp._tag.equals("PROPESS") || dp._tag.equals("PDEN")
-					|| dp._tag.equals("NPROP") || dp._tag.equals("ART") || dp._tag.equals("N"))
+			if ( gerenciador.getTag(dp._tag) != null)
 				proposicao += dp._tag;
 			else
 				proposicao += dp._palavra;
@@ -126,14 +127,14 @@ public class ProposicaoMolecular extends Proposicao
 	 * @param dicionario
 	 * @return
 	 */
-	public String createLogicForm(DicionarioDePadroes dicionarioPadroes, DicionarioDeConectivos dicionarioConec)
+	public String createLogicForm(DicionarioDePadroes dicionarioPadroes, DicionarioDeConectivos dicionarioConec, GerenciadorDeTags gerenciadorTags)
 	{	
 		GerenciadorDeSimbolos gerenciadorSimbolo = GerenciadorDeSimbolos.getInstance();
 		String simbolo = "";
-		String formaLogica = this.coreDaCriacaoDeFormasLogicas(dicionarioPadroes, dicionarioConec);
+		String formaLogica = this.coreDaCriacaoDeFormasLogicas(dicionarioPadroes, dicionarioConec, gerenciadorTags);
 		
 		// Substituo as proposicoes por simbolos.
-		List<ProposicaoAtomica> lst = this.getListadeProposicoesAtomicas(dicionarioPadroes, dicionarioConec);
+		List<ProposicaoAtomica> lst = this.getListadeProposicoesAtomicas(dicionarioPadroes, dicionarioConec,  gerenciadorTags);
 		for (ProposicaoAtomica pa : lst)
 		{
 			simbolo = gerenciadorSimbolo.geraSimbolo(pa.getCorpoDaProposicaoEmString());
@@ -149,7 +150,7 @@ public class ProposicaoMolecular extends Proposicao
 	 * @param dicionarioPadroes
 	 * @return
 	 */
-	public List<ProposicaoAtomica> getListadeProposicoesAtomicas(DicionarioDePadroes dicionarioPadroes, DicionarioDeConectivos dicionarioConec)
+	public List<ProposicaoAtomica> getListadeProposicoesAtomicas(DicionarioDePadroes dicionarioPadroes, DicionarioDeConectivos dicionarioConec, GerenciadorDeTags gerenciadorTags)
 	{
 	
 		// Teremos uma recursão aqui. Talvez esta linha abaixo tenha que ser um parametro!
@@ -162,7 +163,7 @@ public class ProposicaoMolecular extends Proposicao
 			return lst;
 		}
 		// Obtenho string com as proposicoes atomicas nesse nivel.
-		String proposicoesAtomicas = this.getStringdeProposicoesAtomicasSemSeAprofundar(dicionarioPadroes, dicionarioConec);
+		String proposicoesAtomicas = this.getStringdeProposicoesAtomicasSemSeAprofundar(dicionarioPadroes, dicionarioConec, gerenciadorTags);
 		// Transformo em uma lista de dupla texto processado.
 		List<DuplaTextoProcessado> listDuplas = DuplaTextoProcessado.recuperaTagsDaString(proposicoesAtomicas, _corpo);	
 		// Obtenho uma lista de proposicoes moleculares a partir da lista de DuplaTextoPocessado acima.
@@ -171,7 +172,7 @@ public class ProposicaoMolecular extends Proposicao
 		// Para cada proposicao molecular da lista acima chamo esta função novamente.
 		for ( ProposicaoMolecular mol : listMol)
 		{
-			lst.addAll(mol.getListadeProposicoesAtomicas(dicionarioPadroes, dicionarioConec));
+			lst.addAll(mol.getListadeProposicoesAtomicas(dicionarioPadroes, dicionarioConec, gerenciadorTags));
 		}
 		
 		return lst;
@@ -185,99 +186,24 @@ public class ProposicaoMolecular extends Proposicao
 	 * @param dicionarioConec
 	 * @return
 	 */
-	private String getStringdeProposicoesAtomicasSemSeAprofundar(DicionarioDePadroes dicionarioPadroes, DicionarioDeConectivos dicionarioConec)
+	private String getStringdeProposicoesAtomicasSemSeAprofundar(DicionarioDePadroes dicionarioPadroes, DicionarioDeConectivos dicionarioConec, GerenciadorDeTags gerenciadorTag)
 	{
+		gerenciadorTag.resetGerenciador();
 		String corpo = "";
 		// Monto uma string com todas as palavras do corpo da proposicao. É adicionado o número das proposicões.
-		int m = 0; int n = 0; int o = 0; int p = 0; int q = 0; int r = 0; int s = 0; int t = 0 ; int u = 0 ; int v = 0 ;
-		List<String> lstV = new ArrayList<String>();
-		List<String> lstKC = new ArrayList<String>();
-		List<String> lstVAUX = new ArrayList<String>();
-		List<String> lstKS = new ArrayList<String>();
-		List<String> lstADV = new ArrayList<String>();
-		List<String> lstNPROP = new ArrayList<String>();
-		List<String> lstPROPESS = new ArrayList<String>();
-		List<String> lstPDEN = new ArrayList<String>();
-		List<String> lstN = new ArrayList<String>();
-		List<String> lstART = new ArrayList<String>();
 		for ( DuplaTextoProcessado dp: _corpo)
 		{
-			if ( dp._tag.equals("V") )
+			if ( gerenciadorTag.getTag(dp._tag) != null )
 			{
+				Tag tag = gerenciadorTag.getTag(dp._tag);
 				corpo += " ";
-				corpo += dp._tag + Integer.toString(m);
-				lstV.add(dp._palavra);
-				m++;
+				corpo += dp._tag + Integer.toString(tag.getNumeroDeElementosNaLista());		
+				tag.addToInnerList(dp._palavra);
 			}
-			else if (dp._tag.equals("KC") )
-			{
-				corpo += " ";
-				corpo += dp._tag + Integer.toString(n);
-				lstKC.add(dp._palavra);
-				n++;
-			}
-			else if (dp._tag.equals("VAUX") )
-			{
-				corpo += " ";
-				corpo += dp._tag + Integer.toString(o);
-				lstVAUX.add(dp._palavra);
-				o++;
-			}
-			else if (dp._tag.equals("KS") )
-			{
-				corpo += " ";
-				corpo += dp._tag + Integer.toString(p);
-				lstKS.add(dp._palavra);
-				p++;
-			}
-			else if (dp._tag.equals("ADV") )
-			{
-				corpo += " ";
-				corpo += dp._tag + Integer.toString(q);
-				lstADV.add(dp._palavra);
-				q++;
-			}
-			else if (dp._tag.equals("NPROP") )
-			{
-				corpo += " ";
-				corpo += dp._tag + Integer.toString(r);
-				lstNPROP.add(dp._palavra);
-				r++;
-			}
-			else if (dp._tag.equals("PROPESS") )
-			{
-				corpo += " ";
-				corpo += dp._tag + Integer.toString(s);
-				lstPROPESS.add(dp._palavra);
-				s++;
-			}
-			else if (dp._tag.equals("PDEN") )
-			{
-				corpo += " ";
-				corpo += dp._tag + Integer.toString(t);
-				lstPDEN.add(dp._palavra);
-				t++;
-			}
-			else if (dp._tag.equals("N") )
-			{
-				corpo += " ";
-				corpo += dp._tag + Integer.toString(u);
-				lstN.add(dp._palavra);
-				u++;
-			}
-			else if (dp._tag.equals("ART") )
-			{
-				corpo += " ";
-				corpo += dp._tag + Integer.toString(v);
-				lstART.add(dp._palavra);
-				v++;
-			}
-			else if (dp._tag.equals("\\."))
-				corpo += dp._palavra;	
 			else
 			{
 				corpo += " ";
-				corpo += dp._palavra;	
+				corpo += dp._palavra;
 			}
 			
 		}
@@ -286,7 +212,7 @@ public class ProposicaoMolecular extends Proposicao
 		String proposicoesAtomicas = "";
 				
 		// Pattern é a ProposicaoTag desta proposição.
-		String idRegexp = IdentifyPattern(dicionarioPadroes);
+		String idRegexp = IdentifyPattern(dicionarioPadroes, gerenciadorTag);
 		ProposicaoTag Pattern = dicionarioPadroes.ObtemProposicaoTag(idRegexp);
 			
 		// Número de proposicões atomicas que termos. (Dado pelo Pattern)
@@ -318,57 +244,20 @@ public class ProposicaoMolecular extends Proposicao
 				System.out.println("Nao consegui dar match nessa frase!");
 			
 			// Devo trocar os nomes KC0, KC1 e etc.. pelos conectivos e os Verbos V0, V1, e etc.. pelos verbos
-			m = 0; n = 0; o = 0; p = 0; q = 0; r = 0; s = 0; t = 0; u = 0; v = 0;
-			for( String ve : lstV)
+	
+			List<Tag> lstTag = GerenciadorDeTags.getInstance().getListTag();
+			int aux = 0;
+			for ( Tag tag : lstTag )
 			{
-				proposicoesAtomicas = proposicoesAtomicas.replace(" V"+Integer.toString(m), " " + ve);
-				m++;
+				List<String> lst  = tag.getListPalavras();
+				aux = 0;
+				for ( String string: lst)
+				{
+					proposicoesAtomicas = proposicoesAtomicas.replace(" "+tag.getNome()+ Integer.toString(aux), " " + string);
+					aux++;
+				}
 			}
-			for( String kc : lstKC)
-			{
-				proposicoesAtomicas = proposicoesAtomicas.replace(" KC"+Integer.toString(n), " " + kc);
-				n++;
-			}
-			for( String vaux : lstVAUX)
-			{
-				proposicoesAtomicas = proposicoesAtomicas.replace(" VAUX"+Integer.toString(o), " " + vaux);
-				o++;
-			}
-			for( String ks : lstKS)
-			{
-				proposicoesAtomicas = proposicoesAtomicas.replace(" KS"+Integer.toString(p), " " + ks);
-				p++;
-			}
-			for( String adv : lstADV)
-			{
-				proposicoesAtomicas = proposicoesAtomicas.replace(" ADV"+Integer.toString(q), " " + adv);
-				q++;
-			}
-			for( String nprop : lstNPROP)
-			{
-				proposicoesAtomicas = proposicoesAtomicas.replace(" NPROP"+Integer.toString(r), " " + nprop);
-				r++;
-			}
-			for( String propess : lstPROPESS)
-			{
-				proposicoesAtomicas = proposicoesAtomicas.replace(" PROPESS"+Integer.toString(s), " " + propess);
-				s++;
-			}
-			for( String pden : lstPDEN)
-			{
-				proposicoesAtomicas = proposicoesAtomicas.replace(" PDEN"+Integer.toString(t), " " + pden);
-				t++;
-			}
-			for( String no : lstN)
-			{
-				proposicoesAtomicas = proposicoesAtomicas.replace(" N"+Integer.toString(u), " " + no);
-				u++;
-			}
-			for( String art : lstART)
-			{
-				proposicoesAtomicas = proposicoesAtomicas.replace(" ART"+Integer.toString(v), " " + art);
-				v++;
-			}
+			
 			
 			// Devo checar se fechei a proposicao adicionando um '.' caso nao exista.
 			
@@ -385,7 +274,7 @@ public class ProposicaoMolecular extends Proposicao
 		return proposicoesAtomicas;
 	}
 	
-	private String coreDaCriacaoDeFormasLogicas(DicionarioDePadroes dicionarioPadroes, DicionarioDeConectivos dicionarioConec)
+	private String coreDaCriacaoDeFormasLogicas(DicionarioDePadroes dicionarioPadroes, DicionarioDeConectivos dicionarioConec, GerenciadorDeTags gerenciadorTags)
 	{
 		// Caso base
 		if ( this.isAtomic(this) )
@@ -396,7 +285,7 @@ public class ProposicaoMolecular extends Proposicao
 		String logicForm = "";
 		String operador = "";
 		// Obtenho string com as proposicoes atomicas nesse nivel.
-		String proposicoesAtomicas = this.getStringdeProposicoesAtomicasSemSeAprofundar(dicionarioPadroes, dicionarioConec);
+		String proposicoesAtomicas = this.getStringdeProposicoesAtomicasSemSeAprofundar(dicionarioPadroes, dicionarioConec, gerenciadorTags);
 		// Transformo em uma lista de dupla texto processado.
 		List<DuplaTextoProcessado> listDuplas = DuplaTextoProcessado.recuperaTagsDaString(proposicoesAtomicas, _corpo);	
 		// Obtenho uma lista de proposicoes moleculares a partir da lista de DuplaTextoPocessado acima.
@@ -404,10 +293,10 @@ public class ProposicaoMolecular extends Proposicao
 		
 		
 	    // Pattern é a ProposicaoTag desta proposição.
-		String idRegexp = this.IdentifyPattern(dicionarioPadroes);
+		String idRegexp = this.IdentifyPattern(dicionarioPadroes, gerenciadorTags);
 		ProposicaoTag Pattern = dicionarioPadroes.ObtemProposicaoTag(idRegexp);
 		
-		
+		this.findAndChangeConectivos(dicionarioConec);
 		
 		// Caso esteja com problemas para gerar a forma lógica correta checar se o operador que vc está usando não precisa ser escapado.
 		
@@ -416,8 +305,9 @@ public class ProposicaoMolecular extends Proposicao
 			//Este tratamento só acontece no caso EOU por ser um caso mais dificil de indentificar. Caso comum a E e ao OU.
 			if ( !_conectivos.isEmpty() )
 			{
-				operador = _conectivos.get(0)._palavra;
+				operador = dicionarioConec.ObtemConectivo(_conectivos.get(0)._palavra);
 				_conectivos.remove(0);
+				
 				if ( operador.equals("e"))
 					operador = "^";
 				else
@@ -430,7 +320,7 @@ public class ProposicaoMolecular extends Proposicao
 		
 		for ( ProposicaoMolecular p : listMol)
 		{
-			logicForm +=  p.coreDaCriacaoDeFormasLogicas(dicionarioPadroes, dicionarioConec) + " " +  operador + " " ;
+			logicForm +=  p.coreDaCriacaoDeFormasLogicas(dicionarioPadroes, dicionarioConec, gerenciadorTags) + " " +  operador + " " ;
 		}
 		
 		if ( operador.equals("^")) 

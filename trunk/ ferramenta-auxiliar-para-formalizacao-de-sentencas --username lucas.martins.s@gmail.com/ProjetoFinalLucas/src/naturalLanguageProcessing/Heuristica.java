@@ -13,11 +13,13 @@ public class Heuristica
 	private List<ProposicaoAtomica> _atomicas;
 	private DicionarioDeConectivos _dicionarioConectivos;
 	private DicionarioDePadroes _dicionarioPadroes;
+	private GerenciadorDeTags _gerenciadorDeTags;
 	private static FEXT_Handler _fextHandler;
 	
 	public Heuristica( String text )
 	{
 		_inputText = text;
+		_gerenciadorDeTags = GerenciadorDeTags.getInstance();
 		_duplas = DuplaTextoProcessado.processaTexto(_inputText);
 		_dicionarioConectivos = DicionarioDeConectivos.getInstance();
 		_dicionarioPadroes = DicionarioDePadroes.getInstance();
@@ -33,13 +35,13 @@ public class Heuristica
 	public String formaLogicaDaProposicao(int n)
 	{
 		ProposicaoMolecular prop = _proposicoes.get(n);
-		return prop.createLogicForm(_dicionarioPadroes,_dicionarioConectivos);		
+		return prop.createLogicForm(_dicionarioPadroes,_dicionarioConectivos, _gerenciadorDeTags);		
 	}
 	
 	public List<ProposicaoAtomica> proposicoesAtomicasDaProposicao(int n)
 	{
 		ProposicaoMolecular prop = _proposicoes.get(n);
-		return prop.getListadeProposicoesAtomicas(_dicionarioPadroes, _dicionarioConectivos);
+		return prop.getListadeProposicoesAtomicas(_dicionarioPadroes, _dicionarioConectivos, _gerenciadorDeTags);
 	}
 	
 	/**
