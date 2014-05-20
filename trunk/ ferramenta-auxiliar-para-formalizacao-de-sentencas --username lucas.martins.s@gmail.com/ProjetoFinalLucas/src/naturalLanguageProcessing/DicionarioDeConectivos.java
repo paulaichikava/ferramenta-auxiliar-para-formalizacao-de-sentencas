@@ -46,6 +46,8 @@ public class DicionarioDeConectivos
 		_map.put("entretanto", "e");
 		
 		_map.put("ou", "ou");
+		_map.put("porém", "ou");
+		_map.put("portanto", "ou");
 		
 		
 		
