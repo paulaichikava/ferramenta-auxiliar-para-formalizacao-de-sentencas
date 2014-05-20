@@ -179,7 +179,7 @@ public class ProposicaoMolecular extends Proposicao
 	}
 	
 	/**
-	 *    Este método obtem uma String com todas as expressoes atomicas que consigo capturar sem me aprofundar. (  Sem usar recurssão )
+	 *    Este método obtem uma String com todas as expressoes atômicas que consigo capturar sem me aprofundar. (  Sem usar recurssão )
 	 *    Exemplo:
 	 *            Maria e Jorge e Roberto compram doces. Me retornará: " Maria compram doces. Jorge e Roberto compram doces. "
 	 * @param dicionarioPadroes
