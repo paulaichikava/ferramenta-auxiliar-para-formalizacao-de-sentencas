@@ -137,7 +137,9 @@ public class ProposicaoMolecular extends Proposicao
 		List<ProposicaoAtomica> lst = this.getListadeProposicoesAtomicas(dicionarioPadroes, dicionarioConec,  gerenciadorTags);
 		for (ProposicaoAtomica pa : lst)
 		{
-			simbolo = gerenciadorSimbolo.geraSimbolo(pa.getCorpoDaProposicaoEmString());
+			simbolo = gerenciadorSimbolo.geraSimbolo(pa.removeDuplaComNao().getCorpoDaProposicaoEmString());
+			if ( pa.getCorpoDaProposicaoEmString().contains(" Não ")||  pa.getCorpoDaProposicaoEmString().contains(" não "))
+				simbolo = '¬' + simbolo;
 			formaLogica = formaLogica.replaceFirst("\\[X\\]", simbolo);
 		}
 		
