@@ -117,6 +117,27 @@ public abstract class Proposicao
 		return frases;
 	}
 	
+	/**
+	 * 
+	 * 
+	 *  Retorna uma proposição moleuclar sem a palavra não.
+	 * 
+	 * @param void
+	 * @return Uma lista de {@link ProposicaoMolecular}
+	 */
+	public  ProposicaoMolecular removeDuplaComNao ()
+	{
+		List<DuplaTextoProcessado> corpo = new ArrayList<DuplaTextoProcessado>(_corpo);
+		
+		for ( DuplaTextoProcessado dp : _corpo )
+		{
+			if ( dp._palavra.equals("Não") || dp._palavra.equals("não") )
+				corpo.remove(dp);
+			
+		}		 
+		return new ProposicaoMolecular(corpo);
+	}
+	
 	
 	
 }

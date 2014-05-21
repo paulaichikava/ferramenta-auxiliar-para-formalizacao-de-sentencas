@@ -48,6 +48,9 @@ public class GerenciadorDeSimbolos
 	 */
 	public String geraSimbolo( String proposicao)
 	{
+		proposicao = proposicao.replaceAll("não", ""); // Servem para negar, não impactam a proposição.
+		proposicao = proposicao.replaceAll("Não", "");
+		
 		if ( _mapProposicaoSimbolo.containsKey(proposicao) )
 			return _mapProposicaoSimbolo.get(proposicao);
 		
@@ -75,7 +78,7 @@ public class GerenciadorDeSimbolos
 	
 	public String getSimboloDeProp ( Proposicao p)
 	{
-		String str = p.getCorpoDaProposicaoEmString();
+		String str = p.removeDuplaComNao().getCorpoDaProposicaoEmString();
 		return _mapProposicaoSimbolo.get(str);
 	}
 }

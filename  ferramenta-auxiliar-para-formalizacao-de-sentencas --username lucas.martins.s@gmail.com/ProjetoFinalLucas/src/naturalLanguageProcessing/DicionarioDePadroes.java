@@ -86,7 +86,7 @@ public class DicionarioDePadroes
 		
 		// Caso #2: Maria e Jorge gostam de novela.    ->  NPROP KC NPROP V de N.
 		lista = new ArrayList<Pattern>();
-		lista.add(Pattern.compile("KC0.*(?=V0)")); // Match "KC0 Jorge "
+		lista.add(Pattern.compile("(KC0.*(?=N0))|(KC0.*(?=V0))")); // Match "KC0 Jorge " o ou serve para caso tenha um não na sentença
 		lista.add(Pattern.compile(".*?(?<=KC0) ")); // Match "Maria KC0 "
 		//ProposicaoTag a1 = new ProposicaoTag(".*? KC .*? V .*?\\.", lista, "EOU", -1);
 		ProposicaoTag a1 = new ProposicaoTag("NPROP KC NPROP .*?V .*?\\.", lista, "EOU", -1);
@@ -97,7 +97,7 @@ public class DicionarioDePadroes
 		
 		// Caso #3: Lucas e Matheus foram jogar bola.  -> NPROP KC NPROP VAUX V N.
 		lista = new ArrayList<Pattern>();
-		lista.add(Pattern.compile("KC0.*(?=VAUX0)")); // Match "KC0 Matheus "
+		lista.add(Pattern.compile("((KC0.*(?=N0))|(KC0.*(?=VAUX0)))")); // Match "KC0 Matheus "
 		lista.add(Pattern.compile(".*?(?<=KC0) ")); // Match "Lucas KC0 "
 		//ProposicaoTag a2 = new ProposicaoTag(".*? KC .*? VAUX V .*?\\.", lista, "EOU", -1);
 		ProposicaoTag a2 = new ProposicaoTag("NPROP KC NPROP .*? VAUX V .*?\\.", lista, "EOU", -1);
