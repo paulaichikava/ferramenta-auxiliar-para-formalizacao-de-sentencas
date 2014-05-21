@@ -133,7 +133,7 @@ public class Application {
 					ger = GerenciadorDeSimbolos.getInstance();
 					for ( ProposicaoAtomica p : propAtm)
 					{
-						resp += ger.getSimboloDeProp(p) + ": "+ p.getCorpoDaProposicaoEmString()+ " ";
+						resp += ger.getSimboloDeProp(p) + ": "+ p.removeDuplaComNao().getCorpoDaProposicaoEmString()+ " ";
 					}
 					i++;	
 					resp += "\n\n";
