@@ -44,6 +44,7 @@ public class DicionarioDeConectivos
 		_map.put("e","e");
 		_map.put("mas", "e");
 		_map.put("entretanto", "e");
+		_map.put("embora", "e");
 		
 		_map.put("ou", "ou");
 		_map.put("porém", "ou");
