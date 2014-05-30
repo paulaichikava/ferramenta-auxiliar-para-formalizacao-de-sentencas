@@ -47,7 +47,7 @@ public class ProposicaoMolecular extends Proposicao
 		_conectivos.clear();
 		for ( DuplaTextoProcessado dp: _corpo)
 		{
-			if ( dp._tag.contains("KC")) // 
+			if ( dp._tag.contains("KC")|| dp._tag.contains("CJ")) // 
 			{
 				_conectivos.add(dp); 
 			}

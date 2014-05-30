@@ -22,7 +22,7 @@ public class Heuristica
 		_inputText = text;
 		_tipoLexica = tipoLexica;
 		_gerenciadorDeTags = GerenciadorDeTags.getInstance(_tipoLexica); 
-		_duplas = DuplaTextoProcessado.processaTexto(_inputText, _tipoLexica); // Modificar & Programmar Hard
+		_duplas = DuplaTextoProcessado.processaTexto("<p><s> Maria/PNM e/CJ Carlos/PNM são/SER/V#pi-3p bonitos/BONITO/ADJ#mp ./PNT </s></p> ", _tipoLexica); // Modificar & Programmar Hard
 		_dicionarioConectivos = DicionarioDeConectivos.getInstance(); 
 		_dicionarioPadroes = DicionarioDePadroes.getInstance(_tipoLexica);
 		_proposicoes = Proposicao.obtemListaDeProposicoes(_duplas); // Aqui populo a lista de frases com proposições moleculares ou atomicas.

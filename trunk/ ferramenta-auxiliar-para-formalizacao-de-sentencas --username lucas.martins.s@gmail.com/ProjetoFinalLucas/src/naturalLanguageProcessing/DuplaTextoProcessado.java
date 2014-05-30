@@ -90,7 +90,34 @@ public class DuplaTextoProcessado
 			 } 
 		 }
 		 else if (tipoLexica.equals("lxSuite"))
-		 {}	 	 
+		 {
+			 text = text.replaceAll("<p>", "");
+			 text = text.replaceAll("<s>", "");
+			 text = text.replaceAll("</p>", "");
+			 text = text.replaceAll("</s>", "");
+			 itens = text.split(" ");
+			 DuplaTextoProcessado part ;
+			 
+			 for ( String elem: itens) 
+			 {
+				 if ( itens.length > 3  )
+				 {
+					aux = elem.split("/");
+					if ( aux.length == 2 )
+					{
+						part = new DuplaTextoProcessado(aux[0], aux[aux.length-1]);
+						listParts.add(part);
+					}
+					if ( aux.length > 2 )
+					{
+						String aux2 = aux[aux.length-1];
+						aux2 = aux2.replaceFirst("#.*?$", "");
+						part = new DuplaTextoProcessado(aux[0], aux2);
+						listParts.add(part);
+					}
+				 }i++;
+			 }
+		 }	 	 
 		 return listParts;
 	}
 
