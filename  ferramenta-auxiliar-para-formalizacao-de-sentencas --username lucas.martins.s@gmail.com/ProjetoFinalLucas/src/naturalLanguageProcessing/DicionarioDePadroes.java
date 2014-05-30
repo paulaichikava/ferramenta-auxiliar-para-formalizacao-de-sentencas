@@ -37,24 +37,27 @@ public class DicionarioDePadroes
 	 * @author Lucas
 	 * @return Instancia do DicionarioDeConectivos
 	 */
-	public static DicionarioDePadroes getInstance()
+	public static DicionarioDePadroes getInstance(String tipoLexico)
 	{
 		if ( _instance == null )
 		{
-			_instance = new DicionarioDePadroes();
+			_instance = new DicionarioDePadroes(tipoLexico);
 		}
 		return _instance;
 	}
 	
-	protected DicionarioDePadroes ()
+	protected DicionarioDePadroes (String tipoLexico)
 	{
 		_numeroProposicaoTagNoMap = 0;
 		_listTags = new ArrayList<ProposicaoTag>();
-		carregaDicionario();
+		if ( tipoLexico.equals("fext"))
+			carregaDicionarioFext();
+		else if ( tipoLexico.equals("lxSuite"))
+			carregaDicionariolxSuite();
 	}
 	
 	
-	void carregaDicionario()
+	void carregaDicionarioFext()
 	{
 		_map = new HashMap<Integer, ProposicaoTag>();
 		List<Pattern> lista;
@@ -183,6 +186,12 @@ public class DicionarioDePadroes
 //		_numeroProposicaoTagNoMap++;
 //		
 		
+	}
+	
+	void carregaDicionariolxSuite()
+	{
+		_map = new HashMap<Integer, ProposicaoTag>();
+		List<Pattern> lista;
 	}
 	
 	int getNumberOfElements()
