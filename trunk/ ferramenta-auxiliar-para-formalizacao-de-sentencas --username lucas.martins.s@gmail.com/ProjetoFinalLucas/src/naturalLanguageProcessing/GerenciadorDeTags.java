@@ -1,9 +1,7 @@
 package naturalLanguageProcessing;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -16,12 +14,15 @@ public class GerenciadorDeTags
 {
 	
 	private static GerenciadorDeTags _instance; // instancia do gerenciador
-	private List<Tag> _tags = new ArrayList<Tag>();
+	private static List<Tag> _tags = new ArrayList<Tag>();
 	
 
-	private GerenciadorDeTags ()
+	private GerenciadorDeTags ( String tipoLexico)
 	{
-		inicializaTags();
+		if ( tipoLexico.equals("fext"))
+			inicializaTagsFext();
+		else if ( tipoLexico.equals("lxSuite"))
+			inicializaTagsLxSuite();
 
 
 	}
@@ -34,24 +35,47 @@ public class GerenciadorDeTags
 	 * @author Lucas
 	 * @return Instancia do {@link GerenciadorDeSimbolos}
 	 */
-	public static GerenciadorDeTags getInstance()
+	public static GerenciadorDeTags getInstance( String tipoLexico)
 	{
 		if ( _instance == null )
 		{
-			_instance = new GerenciadorDeTags();
+			_instance = new GerenciadorDeTags(tipoLexico);
 		}
 		return _instance;
 	}
 	
 	
 	/**
-	 * Classe responsável por inicializar os tags com os padrões da aplicação
+	 * Classe responsável por inicializar os tags com os padrões Fext
 	 * 
 	 * @author Lucas
 	 * @return void
 	 */
-	private void inicializaTags()
+	private void inicializaTagsFext()
 	{
+		_tags.clear();
+		_tags.add(new Tag("KC"));
+		_tags.add(new Tag("V"));
+		_tags.add(new Tag("VAUX"));
+		_tags.add(new Tag("KS"));
+		_tags.add(new Tag("ADV"));
+		_tags.add(new Tag("NPROP"));
+		_tags.add(new Tag("PROPESS"));
+		_tags.add(new Tag("PDEN"));
+		_tags.add(new Tag("PROP"));
+		_tags.add(new Tag("ART"));
+		_tags.add(new Tag("N"));
+	}
+	
+	/**
+	 * Classe responsável por inicializar os tags com os padrões lxSuite
+	 * 
+	 * @author Lucas
+	 * @return void
+	 */
+	private void inicializaTagsLxSuite()
+	{
+		_tags.clear();
 		_tags.add(new Tag("KC"));
 		_tags.add(new Tag("V"));
 		_tags.add(new Tag("VAUX"));
@@ -87,7 +111,7 @@ public class GerenciadorDeTags
 	 * Retorna lista contendo as tags.
 	 * @return List<{@link Tag}>
 	 */
-	public List<Tag> getListTag ()
+	public static List<Tag> getListTag ()
 	{
 		return _tags;
 	}
@@ -99,7 +123,7 @@ public class GerenciadorDeTags
 	public void resetGerenciador()
 	{
 		_tags.clear();
-		this.inicializaTags();
+		this.inicializaTagsFext();
 	}
 
 }
