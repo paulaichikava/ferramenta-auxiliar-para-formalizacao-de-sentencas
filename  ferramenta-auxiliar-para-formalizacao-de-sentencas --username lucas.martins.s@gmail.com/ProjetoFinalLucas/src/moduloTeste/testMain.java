@@ -24,9 +24,7 @@ public class testMain
 		 
 		 // Inicio do teste ( parte mais recente do código )
 		
-		 
-		 answer = handler.EnrichText("Maria comprou um carro. Maria usa verde.");
-		 naturalLanguageProcessing.Heuristica heuristica = new Heuristica(answer);
+
 		
 		
 		
