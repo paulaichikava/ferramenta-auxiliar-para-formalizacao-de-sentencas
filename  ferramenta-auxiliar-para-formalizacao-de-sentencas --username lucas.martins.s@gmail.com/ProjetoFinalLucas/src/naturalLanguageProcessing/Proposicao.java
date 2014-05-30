@@ -30,9 +30,11 @@ public abstract class Proposicao
 		int b = 0;
 		for ( DuplaTextoProcessado dp : p._corpo )
 		{
-			if ( dp._tag.equals("KC") )
+			if ( dp._tag.equals("KC") || dp._tag.equals("CJ") )
 				return false;
 			// Daqui para baixo serve para pegar caso Se -> Entao
+			else if ( dp._tag.startsWith("LCJ"))
+				return false;
 			else if ( dp._tag.equals("KS"))
 				a++;
 			else if ( dp._tag.equals("ADV"))
