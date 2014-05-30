@@ -67,27 +67,30 @@ public class DuplaTextoProcessado
 	 * @param text Texto já processado pelo F-EXT que gerará a lista de Duplas.
 	 * @return Lista do objeto DuplaTextoProcessado que é um uma dupla ( texto / Significado )
 	 */
-	public static List<DuplaTextoProcessado> processaTexto( String text )
+	public static List<DuplaTextoProcessado> processaTexto( String text , String tipoLexica)
 	{
 		 String[] itens;
 		 String[] aux;
 		 List<DuplaTextoProcessado> listParts = new ArrayList<DuplaTextoProcessado>();
 		 int i = 0;
-		 
-		 itens =  text.split("\n");
-		 
-		 System.out.println(text);
-		
-		 for ( String elem: itens) 
+		 if ( tipoLexica.equals("fext"))
 		 {
-			 if ( i > 1 & i < itens.length  )
+			 itens =  text.split("\n");
+			 
+			 System.out.println(text);
+			
+			 for ( String elem: itens) 
 			 {
-				aux = elem.split(" ");
-				DuplaTextoProcessado part = new DuplaTextoProcessado(aux[0], aux[aux.length-1]);
-				listParts.add(part);
-			 }i++;
+				 if ( i > 1 & i < itens.length  )
+				 {
+					aux = elem.split(" ");
+					DuplaTextoProcessado part = new DuplaTextoProcessado(aux[0], aux[aux.length-1]);
+					listParts.add(part);
+				 }i++;
+			 } 
 		 }
-		 
+		 else if (tipoLexica.equals("lxSuite"))
+		 {}	 	 
 		 return listParts;
 	}
 
