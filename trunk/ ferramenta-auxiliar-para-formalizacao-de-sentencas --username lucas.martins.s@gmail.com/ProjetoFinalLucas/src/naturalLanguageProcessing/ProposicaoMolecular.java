@@ -247,7 +247,7 @@ public class ProposicaoMolecular extends Proposicao
 			
 			// Devo trocar os nomes KC0, KC1 e etc.. pelos conectivos e os Verbos V0, V1, e etc.. pelos verbos
 	
-			List<Tag> lstTag = GerenciadorDeTags.getInstance().getListTag();
+			List<Tag> lstTag = GerenciadorDeTags.getListTag();
 			int aux = 0;
 			for ( Tag tag : lstTag )
 			{
