@@ -38,9 +38,11 @@ import naturalLanguageProcessing.Heuristica;
 import naturalLanguageProcessing.ProposicaoMolecular;
 import net.miginfocom.swing.MigLayout;
 
+import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JOptionPane;
+import javax.swing.JRadioButton;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.AbstractAction;
 
@@ -53,6 +55,8 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import lxSuite.lxSuite_Handler;
+
 public class Application {
 
 	private JFrame frmProjetoFinalExemplo;
@@ -60,7 +64,8 @@ public class Application {
 	
 	//Meu código
 	private Heuristica _heuristica;
-	private FEXT_Handler handler ;
+	private FEXT_Handler handlerFext ;
+	private lxSuite_Handler handlerLxSuite;
 
 	/**
 	 * Launch the application.
@@ -95,6 +100,13 @@ public class Application {
 		frmProjetoFinalExemplo.setBounds(100, 100, 800, 600);
 		frmProjetoFinalExemplo.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		final JRadioButton FEXTwsRadio = new JRadioButton("FEXT");
+        final JRadioButton LXSuiteRadio = new JRadioButton("LX Suite");
+        
+        ButtonGroup group = new ButtonGroup();
+        group.add(FEXTwsRadio);
+        group.add(LXSuiteRadio);
+		
 		JLabel lblNewLabel = new JLabel("Insira uma frase em português:");
 		lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD, 20));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -103,6 +115,7 @@ public class Application {
 		final TextArea textAreaResposta = new TextArea();
 		
 		JButton btnExecutar = new JButton("Executar");
+		
 		
 		txtInput = new JTextField();
 		txtInput.setText("Frase em portugues...");
@@ -117,10 +130,23 @@ public class Application {
 			public void mouseClicked(MouseEvent arg0) 
 			{
 			//	JOptionPane.showMessageDialog(null, "My Goodness, this is so concise");
-				handler = FEXT_Handler.getInstance();
-				String answer =  handler.EnrichText(txtInput.getText());
+				String answer;
+				String tipoLexica;
+				if ( FEXTwsRadio.isSelected() )
+				{
+					handlerFext = FEXT_Handler.getInstance();
+					answer =  handlerFext.EnrichText(txtInput.getText());
+					tipoLexica = "fext";
+				}
+				else
+				{
+					handlerLxSuite = lxSuite_Handler.getInstance();
+					answer =  handlerLxSuite.EnrichText(txtInput.getText());
+					tipoLexica = "lxSuite";
+				}
+				
 				GerenciadorDeSimbolos ger;
-				_heuristica = new Heuristica(answer);
+				_heuristica = new Heuristica(answer, tipoLexica);
 				List<ProposicaoMolecular> propMol = new ArrayList<ProposicaoMolecular>(_heuristica.getProposicoes());
 				String resp = "";
 				int i = 0;
@@ -157,15 +183,25 @@ public class Application {
 							.addGap(33)
 							.addComponent(btnExecutar_1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 						.addComponent(textAreaResposta, GroupLayout.PREFERRED_SIZE, 691, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblNewLabel))
+						.addComponent(lblNewLabel)
+						.addGap(15)
+						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addComponent(FEXTwsRadio)
+							.addGap(33)
+							.addComponent(LXSuiteRadio)))						
 					.addGap(54))
-		);
+		));
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addGap(66)
 					.addComponent(lblNewLabel)
-					.addGap(96)
+					.addGap(50)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+							.addComponent(FEXTwsRadio)
+							.addComponent(LXSuiteRadio))
+					.addGap(46)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(txtInput, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(btnExecutar_1))
