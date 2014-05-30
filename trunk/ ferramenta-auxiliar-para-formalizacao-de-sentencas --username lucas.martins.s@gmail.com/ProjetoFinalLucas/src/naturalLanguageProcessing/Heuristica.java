@@ -8,6 +8,7 @@ import fext.FEXT_Handler;
 public class Heuristica 
 {
 	private String _inputText;
+	private String _tipoLexica;
 	private List<DuplaTextoProcessado> _duplas;
 	private List<ProposicaoMolecular> _proposicoes;
 	private List<ProposicaoAtomica> _atomicas;
@@ -16,13 +17,14 @@ public class Heuristica
 	private GerenciadorDeTags _gerenciadorDeTags;
 	private static FEXT_Handler _fextHandler;
 	
-	public Heuristica( String text )
+	public Heuristica( String text, String tipoLexica )
 	{
 		_inputText = text;
-		_gerenciadorDeTags = GerenciadorDeTags.getInstance();
-		_duplas = DuplaTextoProcessado.processaTexto(_inputText);
-		_dicionarioConectivos = DicionarioDeConectivos.getInstance();
-		_dicionarioPadroes = DicionarioDePadroes.getInstance();
+		_tipoLexica = tipoLexica;
+		_gerenciadorDeTags = GerenciadorDeTags.getInstance(_tipoLexica); 
+		_duplas = DuplaTextoProcessado.processaTexto(_inputText, _tipoLexica); // Modificar & Programmar Hard
+		_dicionarioConectivos = DicionarioDeConectivos.getInstance(); 
+		_dicionarioPadroes = DicionarioDePadroes.getInstance(_tipoLexica);
 		_proposicoes = Proposicao.obtemListaDeProposicoes(_duplas); // Aqui populo a lista de frases com proposições moleculares ou atomicas.
 		_atomicas = Proposicao.obtemProposicoesAtomicas(_proposicoes,_dicionarioConectivos);  
 	}
