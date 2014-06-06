@@ -192,6 +192,36 @@ public class DicionarioDePadroes
 	{
 		_map = new HashMap<Integer, ProposicaoTag>();
 		List<Pattern> lista;
+		
+		// Ao fazer casos Hard Coded!!!
+		// #### IMPORTANTE !!!!!  =====>  Os KC's e V's devem ser sempre numerados começando de 0. Para serem adicionados a lista que obterá as proposições atômicas. ####
+		// Importante 2: Casos devem ser adicionados na sua devida ordem de importancia.( Numeros de "tags" ( KC, VAUX, V) usados.) Quanto maior a prioridade do caso mais abaixo ele deve ser adicionado. 
+		// Importante 3: Casos somente podem ser quebrados em 2 proposicoes atomicas.
+		// Importante 4: Casos como <Se Entao> e <Se e Somente Se> devem ter prioridade. ( Acredito que por causa da transitividade) Será? (21/04)
+		
+		//#####   Casos Hard Coded.  ####
+		
+		
+		// Caso #1: Maria gosta de novela ou Jorge gosta de novela.  -> NPROP V de N KC NPROP V de N.
+		lista = new ArrayList<Pattern>();
+		lista.add(Pattern.compile(".*?(?=CJ0)")); // Match "Maria V0 de novela"
+		lista.add(Pattern.compile("(?<=CJ0).*?$")); // Match " Jorge V0 de novela."
+		ProposicaoTag a5 = new ProposicaoTag(".*?V.*?CJ.*?$", lista, "EOU",0);
+		_map.put(_numeroProposicaoTagNoMap,a5);
+		_listTags.add(a5);
+		_numeroProposicaoTagNoMap++;
+		
+		
+		// Caso #2: Maria e Jorge gostam de novela.    ->  NPROP KC NPROP V de N.
+		lista = new ArrayList<Pattern>();
+		lista.add(Pattern.compile("(CJ0.*(?=CN0))|(CJ0.*(?=V0))")); // Match "KC0 Jorge " o ou serve para caso tenha um não na sentença
+		lista.add(Pattern.compile(".*?(?<=CJ0) ")); // Match "Maria KC0 "
+		//ProposicaoTag a1 = new ProposicaoTag(".*? KC .*? V .*?\\.", lista, "EOU", -1);
+		ProposicaoTag a1 = new ProposicaoTag("PNM CJ PNM .*?V .*?\\.", lista, "EOU", -1);
+		_map.put(_numeroProposicaoTagNoMap,a1);
+		_listTags.add(a1);
+		_numeroProposicaoTagNoMap++;
+		
 	}
 	
 	int getNumberOfElements()

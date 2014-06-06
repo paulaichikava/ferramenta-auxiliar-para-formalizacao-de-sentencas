@@ -112,6 +112,10 @@ public class DuplaTextoProcessado
 					{
 						String aux2 = aux[aux.length-1];
 						aux2 = aux2.replaceFirst("#.*?$", "");
+						if(aux[2].equals("PNT"))
+						{
+							aux[0] = aux[0].replaceFirst("\\*", "");
+						}
 						part = new DuplaTextoProcessado(aux[0], aux2);
 						listParts.add(part);
 					}
