@@ -76,17 +76,17 @@ public class GerenciadorDeTags
 	private void inicializaTagsLxSuite()
 	{
 		_tags.clear();
-		_tags.add(new Tag("KC"));
+		_tags.add(new Tag("CJ"));
 		_tags.add(new Tag("V"));
 		_tags.add(new Tag("VAUX"));
-		_tags.add(new Tag("KS"));
+		_tags.add(new Tag("CL"));
 		_tags.add(new Tag("ADV"));
-		_tags.add(new Tag("NPROP"));
-		_tags.add(new Tag("PROPESS"));
-		_tags.add(new Tag("PDEN"));
-		_tags.add(new Tag("PROP"));
-		_tags.add(new Tag("ART"));
-		_tags.add(new Tag("N"));
+		_tags.add(new Tag("PNM"));
+		_tags.add(new Tag("PRS"));
+	//	_tags.add(new Tag("PDEN"));
+	//	_tags.add(new Tag("PROP"));
+		_tags.add(new Tag("DA"));
+		_tags.add(new Tag("CN"));
 	}
 	
 	
