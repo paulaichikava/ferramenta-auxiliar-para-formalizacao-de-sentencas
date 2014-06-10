@@ -15,14 +15,21 @@ public class GerenciadorDeTags
 	
 	private static GerenciadorDeTags _instance; // instancia do gerenciador
 	private static List<Tag> _tags = new ArrayList<Tag>();
+	private String _tipoLexico;
 	
 
 	private GerenciadorDeTags ( String tipoLexico)
 	{
 		if ( tipoLexico.equals("fext"))
+		{
 			inicializaTagsFext();
+			_tipoLexico = "fext";
+		}
 		else if ( tipoLexico.equals("lxSuite"))
+		{
 			inicializaTagsLxSuite();
+			_tipoLexico = "lxSuite";
+		}
 
 
 	}
@@ -123,7 +130,10 @@ public class GerenciadorDeTags
 	public void resetGerenciador()
 	{
 		_tags.clear();
-		this.inicializaTagsFext();
+		if ( this._tipoLexico == "lxSuite")
+			this.inicializaTagsLxSuite();
+		else
+			this.inicializaTagsFext();
 	}
 
 }
