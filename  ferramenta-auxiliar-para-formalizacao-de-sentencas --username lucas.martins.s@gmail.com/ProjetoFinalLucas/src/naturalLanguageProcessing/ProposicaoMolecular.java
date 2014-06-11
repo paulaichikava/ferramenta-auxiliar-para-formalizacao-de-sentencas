@@ -228,7 +228,7 @@ public class ProposicaoMolecular extends Proposicao
 			Matcher matcher = Pattern.getRexpForNprop(i).matcher(corpo); // Realizo o Match
 			if (matcher.find()) // Se consegui sucesso
 			{
-				// Agora testo para cada caso. ( 1 ou 0 respectivamente, Extracao ou uso do match puro)
+				// Agora testo para cada caso. ( -1 ou 0 respectivamente, Extracao ou uso do match puro)
 				if ( Pattern.getTipoDeExtracao() == -1)
 				{
 					// Caso extraçao ( Usado em e's e ou's )
