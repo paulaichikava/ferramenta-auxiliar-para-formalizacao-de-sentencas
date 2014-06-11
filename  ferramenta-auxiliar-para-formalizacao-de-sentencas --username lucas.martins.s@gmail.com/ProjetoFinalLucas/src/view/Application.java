@@ -141,12 +141,12 @@ public class Application {
 				else
 				{
 					handlerLxSuite = lxSuite_Handler.getInstance();
-				//	answer =  handlerLxSuite.EnrichText(txtInput.getText());
-					answer = "teste";
+					answer =  handlerLxSuite.EnrichText(txtInput.getText());
+					//answer = "teste";
 					tipoLexica = "lxSuite";
 				}
 				
-			//    System.out.print(answer);
+			    System.out.print(answer);
 				GerenciadorDeSimbolos ger;
 				_heuristica = new Heuristica(answer, tipoLexica);
 				List<ProposicaoMolecular> propMol = new ArrayList<ProposicaoMolecular>(_heuristica.getProposicoes());
