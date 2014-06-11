@@ -36,6 +36,7 @@ public class DuplaTextoProcessado
 		// Proxima linha existe para garatir que a ordem das palavras na lista é fiel a string Str
 	//	str = str.replaceAll("\\.", " \\. ");
 		str = str+" ";
+		str = str.replaceAll("\\s+", " ");
 		String palavra = str.substring(0, str.indexOf(" "));  // Obtenho a 1 palavra da string. Quero adicionar ela.
 		
 		int i = 0;
@@ -95,6 +96,7 @@ public class DuplaTextoProcessado
 			 text = text.replaceAll("<s>", "");
 			 text = text.replaceAll("</p>", "");
 			 text = text.replaceAll("</s>", "");
+			 text = text.replaceAll(",\\*//PNT", ",/VRG");
 			 itens = text.split(" ");
 			 DuplaTextoProcessado part ;
 			 
@@ -105,7 +107,9 @@ public class DuplaTextoProcessado
 					aux = elem.split("/");
 					if ( aux.length == 2 )
 					{
-						part = new DuplaTextoProcessado(aux[0], aux[aux.length-1]);
+						String aux2 = aux[aux.length-1];
+						aux2 = aux2.replaceFirst("#.*?$", "");
+						part = new DuplaTextoProcessado(aux[0], aux2);
 						listParts.add(part);
 					}
 					if ( aux.length > 2 )

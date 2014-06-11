@@ -90,8 +90,8 @@ public class GerenciadorDeTags
 		_tags.add(new Tag("ADV"));
 		_tags.add(new Tag("PNM"));
 		_tags.add(new Tag("PRS"));
-	//	_tags.add(new Tag("PDEN"));
-	//	_tags.add(new Tag("PROP"));
+		_tags.add(new Tag("CL"));
+		_tags.add(new Tag("VRG"));
 		_tags.add(new Tag("DA"));
 		_tags.add(new Tag("CN"));
 	}
