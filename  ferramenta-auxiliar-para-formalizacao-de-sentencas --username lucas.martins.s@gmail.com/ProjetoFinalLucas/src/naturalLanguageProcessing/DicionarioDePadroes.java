@@ -222,16 +222,25 @@ public class DicionarioDePadroes
 		_listTags.add(a1);
 		_numeroProposicaoTagNoMap++;
 		
-		// Caso #5: Se Lucas foi jogar bola, logo Matheus foi jogar bola.  -> CJ PNM V V CN VRG ADV PNM V V CN.
+		// Caso #5: Se o câmbio cair, temos inflação.  -> CJ DA CN V VRG V CN.
 		lista = new ArrayList<Pattern>();
 		lista.add(Pattern.compile("(?<=CJ0 ).*? (?=VRG0)")); // Match "PNM V V CN"
-		lista.add(Pattern.compile("(?<=ADV0 ).*?\\.")); // Match "PNM V V CN."
-		ProposicaoTag a4 = new ProposicaoTag("^CJ .*? VRG .*?ADV .*?\\.", lista, "->",0);
+		lista.add(Pattern.compile("(?<=VRG0 ).*?\\.")); // Match "PNM V V CN."
+		ProposicaoTag a4 = new ProposicaoTag("^CJ .*? VRG .*?V .*?\\.", lista, "->",0);
 		_map.put(_numeroProposicaoTagNoMap,a4);
 		_listTags.add(a4);
 		_numeroProposicaoTagNoMap++;
 		
-		// Caso #6: Maria comprará frango se e somente se tiver dinheiro.  -> PNM  V CN CJ CJ  ADV  CL V CN.
+		// Caso #6: Se Lucas foi jogar bola, logo Matheus foi jogar bola.  -> CJ PNM V V CN VRG ADV PNM V V CN.
+		lista = new ArrayList<Pattern>();
+		lista.add(Pattern.compile("(?<=CJ0 ).*? (?=VRG0)")); // Match "PNM V V CN"
+		lista.add(Pattern.compile("(?<=ADV0 ).*?\\.")); // Match "PNM V V CN."
+		ProposicaoTag a3 = new ProposicaoTag("^CJ .*? VRG .*?ADV .*?\\.", lista, "->",0);
+		_map.put(_numeroProposicaoTagNoMap,a3);
+		_listTags.add(a3);
+		_numeroProposicaoTagNoMap++;
+		
+		// Caso #7: Maria comprará frango se e somente se tiver dinheiro.  -> PNM  V CN CJ CJ  ADV  CL V CN.
 		lista = new ArrayList<Pattern>();
 		lista.add(Pattern.compile("CJ0.*?$")); // Match "CJ0 CJ1 ADV0 CL0 V1 CN1."
 		lista.add(Pattern.compile("V0.*?(?=V1)")); // Match "V CN CJ CJ ADV CL "
@@ -240,7 +249,7 @@ public class DicionarioDePadroes
 		_listTags.add(a6);
 		_numeroProposicaoTagNoMap++;
 		
-		// Caso #7: A menos que o carro seja novo, o motor nao precisa de revisao.  -> DA ADV CJ DA CN V ADJ VRG DO CN ADV V PREP CN.
+		// Caso #8: A menos que o carro seja novo, o motor nao precisa de revisao.  -> DA ADV CJ DA CN V ADJ VRG DO CN ADV V PREP CN.
 		lista = new ArrayList<Pattern>();
 		lista.add(Pattern.compile("(?<=DA0 ADV0 CJ0).*?(?=VRG0)")); // Match "DA ADV V de revisao."
 		lista.add(Pattern.compile("(?<=VRG0).*?$")); // Match "N V novo"
