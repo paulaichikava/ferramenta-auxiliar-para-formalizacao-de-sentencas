@@ -14,7 +14,7 @@ public class GerenciadorDeSimbolos
 	
 	private static GerenciadorDeSimbolos _instance; // instancia do gerenciador
 	private static Map<String, String> _mapSimboloProposicao; // Map Simbulo -> Proposicao
-	private static Map<String, String> _mapProposicaoSimbolo; // Map Simbulo -> Proposicao
+	private static Map<String, String> _mapProposicaoSimbolo; // Map Proposicao -> Simbulo
 	private static String _ultimoSimboloUsado; // Ultimo simbolo gerado.
 
 	private GerenciadorDeSimbolos ()
@@ -51,12 +51,17 @@ public class GerenciadorDeSimbolos
 		proposicao = proposicao.replaceAll("não", ""); // Servem para negar, não impactam a proposição.
 		proposicao = proposicao.replaceAll("Não", "");
 		
-		if ( _mapProposicaoSimbolo.containsKey(proposicao) )
+		
+		if ( _mapProposicaoSimbolo.containsKey(proposicao) ) // Verifico se já existe um simbolo para esta proposição
 			return _mapProposicaoSimbolo.get(proposicao);
 		
 		char a = _ultimoSimboloUsado.charAt(_ultimoSimboloUsado.length() - 1);
 		a++;
-		if ( _ultimoSimboloUsado.length() == 1)
+	//	if ( a == 'z')
+	//	{
+			
+	//	}
+		if ( _ultimoSimboloUsado.length() == 1) // Caso  tenha tamanho 1
 		{
 			_ultimoSimboloUsado = Character.toString(a);
 		}
