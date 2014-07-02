@@ -96,7 +96,7 @@ public class Application {
 	private void initialize() 
 	{
 		frmProjetoFinalExemplo = new JFrame();
-		frmProjetoFinalExemplo.setTitle("Projeto Final");
+		frmProjetoFinalExemplo.setTitle("Ferramenta Preliminar para Auxílio a Formalização de Textos.");
 		frmProjetoFinalExemplo.setBounds(100, 100, 800, 600);
 		frmProjetoFinalExemplo.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -157,14 +157,18 @@ public class Application {
 					resp += "Para a proposicao: "+ proposicao.getCorpoDaProposicaoEmString()+ "\n";
 					resp += "Temos:" + _heuristica.formaLogicaDaProposicao(i) + "\n";
 					resp += "Onde:" + "\n";
-					List<ProposicaoAtomica> propAtm = _heuristica.proposicoesAtomicasDaProposicao(i);
-					ger = GerenciadorDeSimbolos.getInstance();
-					for ( ProposicaoAtomica p : propAtm)
+					try
 					{
-						resp += ger.getSimboloDeProp(p) + ": "+ p.removeDuplaComNao().getCorpoDaProposicaoEmString()+ " ";
+						List<ProposicaoAtomica> propAtm = _heuristica.proposicoesAtomicasDaProposicao(i);
+						ger = GerenciadorDeSimbolos.getInstance();
+						for ( ProposicaoAtomica p : propAtm)
+						{
+							resp += ger.getSimboloDeProp(p) + ": "+ p.removeDuplaComNao().getCorpoDaProposicaoEmString()+ " ";
+						}
+						i++;	
+						resp += "\n\n";
 					}
-					i++;	
-					resp += "\n\n";
+					catch (Exception e) { resp ="Ops algo deu errado, olhe o console para mais informações.";}
 				}
 				textAreaResposta.setText(resp);
 				
