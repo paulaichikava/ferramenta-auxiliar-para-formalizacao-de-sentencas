@@ -1,5 +1,6 @@
 package naturalLanguageProcessing;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import fext.FEXT_Handler;
@@ -43,7 +44,31 @@ public class Heuristica
 	public List<ProposicaoAtomica> proposicoesAtomicasDaProposicao(int n)
 	{
 		ProposicaoMolecular prop = _proposicoes.get(n);
-		return prop.getListadeProposicoesAtomicas(_dicionarioPadroes, _dicionarioConectivos, _gerenciadorDeTags);
+		List<ProposicaoAtomica> lst = prop.getListadeProposicoesAtomicas(_dicionarioPadroes, _dicionarioConectivos, _gerenciadorDeTags);
+		if ( lst == null ) // caso error
+			return null;
+		List<ProposicaoAtomica> lst2 =  new ArrayList<>(lst);
+		List<ProposicaoAtomica> lst3 =  new ArrayList<>();
+		
+		// Encontrando proposições idênticas
+		for ( ProposicaoAtomica prp : lst)
+		{
+			lst2.remove(prp);
+			for ( ProposicaoAtomica prp1 : lst2)
+			{
+				if (prp.IsEqual(prp1))
+				{
+					lst3.add(prp1);
+				}
+			}
+		}
+		// Removendo proposições idênticas
+		for ( ProposicaoAtomica prp : lst3)
+		{
+			lst.remove(prp);
+		}
+		
+		return lst;
 	}
 	
 	/**
