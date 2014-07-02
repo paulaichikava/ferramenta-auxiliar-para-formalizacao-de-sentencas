@@ -15,7 +15,7 @@ public class GerenciadorDeTags
 	
 	private static GerenciadorDeTags _instance; // instancia do gerenciador
 	private static List<Tag> _tags = new ArrayList<Tag>();
-	private String _tipoLexico;
+	private static String _tipoLexico;
 	
 
 	private GerenciadorDeTags ( String tipoLexico)
@@ -44,7 +44,7 @@ public class GerenciadorDeTags
 	 */
 	public static GerenciadorDeTags getInstance( String tipoLexico)
 	{
-		if ( _instance == null )
+		if ( _instance == null || !tipoLexico.equals(_tipoLexico) )
 		{
 			_instance = new GerenciadorDeTags(tipoLexico);
 		}

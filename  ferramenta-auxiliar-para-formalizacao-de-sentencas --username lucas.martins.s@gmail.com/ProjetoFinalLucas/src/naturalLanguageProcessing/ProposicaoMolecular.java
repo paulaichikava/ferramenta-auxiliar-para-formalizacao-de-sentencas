@@ -9,7 +9,6 @@ public class ProposicaoMolecular extends Proposicao
 
 	public List<DuplaTextoProcessado> _conectivos; // Conectivos
 	public String _conectivoPrincipal; // Conectivo Principal
-	private List<String> _tags;
 	
 	
 	public ProposicaoMolecular(List<DuplaTextoProcessado> corpo)
@@ -135,6 +134,8 @@ public class ProposicaoMolecular extends Proposicao
 		
 		// Substituo as proposicoes por simbolos.
 		List<ProposicaoAtomica> lst = this.getListadeProposicoesAtomicas(dicionarioPadroes, dicionarioConec,  gerenciadorTags);
+		if ( lst == null ) //caso error
+			return null;
 		for (ProposicaoAtomica pa : lst)
 		{
 			simbolo = gerenciadorSimbolo.geraSimbolo(pa.removeDuplaComNao().getCorpoDaProposicaoEmString());
@@ -166,6 +167,8 @@ public class ProposicaoMolecular extends Proposicao
 		}
 		// Obtenho string com as proposicoes atomicas nesse nivel.
 		String proposicoesAtomicas = this.getStringdeProposicoesAtomicasSemSeAprofundar(dicionarioPadroes, dicionarioConec, gerenciadorTags);
+		if ( proposicoesAtomicas == null) // Caso algum erro
+			return null;
 		// Transformo em uma lista de dupla texto processado.
 		List<DuplaTextoProcessado> listDuplas = DuplaTextoProcessado.recuperaTagsDaString(proposicoesAtomicas, _corpo);	
 		// Obtenho uma lista de proposicoes moleculares a partir da lista de DuplaTextoPocessado acima.
@@ -176,7 +179,6 @@ public class ProposicaoMolecular extends Proposicao
 		{
 			lst.addAll(mol.getListadeProposicoesAtomicas(dicionarioPadroes, dicionarioConec, gerenciadorTags));
 		}
-		
 		return lst;
 	}
 	
@@ -216,6 +218,12 @@ public class ProposicaoMolecular extends Proposicao
 		// Pattern é a ProposicaoTag desta proposição.
 		String idRegexp = IdentifyPattern(dicionarioPadroes, gerenciadorTag);
 		ProposicaoTag Pattern = dicionarioPadroes.ObtemProposicaoTag(idRegexp);
+		
+		if (Pattern == null)
+		{
+			System.out.print("Não foi possível encontrar um Padrão compatível com esta expressão no dicionário.");
+			return null;
+		}
 			
 		// Número de proposicões atomicas que termos. (Dado pelo Pattern)
 		int numeroDeProposicoes = Pattern.getNumeroDeProposicoesAtomicas();
@@ -288,6 +296,8 @@ public class ProposicaoMolecular extends Proposicao
 		String operador = "";
 		// Obtenho string com as proposicoes atomicas nesse nivel.
 		String proposicoesAtomicas = this.getStringdeProposicoesAtomicasSemSeAprofundar(dicionarioPadroes, dicionarioConec, gerenciadorTags);
+		if ( proposicoesAtomicas == null)
+			return null;
 		// Transformo em uma lista de dupla texto processado.
 		List<DuplaTextoProcessado> listDuplas = DuplaTextoProcessado.recuperaTagsDaString(proposicoesAtomicas, _corpo);	
 		// Obtenho uma lista de proposicoes moleculares a partir da lista de DuplaTextoPocessado acima.
@@ -301,24 +311,28 @@ public class ProposicaoMolecular extends Proposicao
 		this.findAndChangeConectivos(dicionarioConec);
 		
 		// Caso esteja com problemas para gerar a forma lógica correta checar se o operador que vc está usando não precisa ser escapado.
-		
-		if ( Pattern.getOperadorLogico().equals("EOU"))
+		try
 		{
-			//Este tratamento só acontece no caso EOU por ser um caso mais dificil de indentificar. Caso comum a E e ao OU.
-			if ( !_conectivos.isEmpty() )
+			if ( Pattern.getOperadorLogico().equals("EOU"))
 			{
-				operador = dicionarioConec.ObtemConectivo(_conectivos.get(0)._palavra);
-				_conectivos.remove(0);
-				
-				if ( operador.equals("e"))
-					operador = "^";
-				else
-					operador = "v";
-			}
-		}	
-		else
-			operador = Pattern.getOperadorLogico();
-		
+				//Este tratamento só acontece no caso EOU por ser um caso mais dificil de indentificar. Caso comum a E e ao OU.
+				if ( !_conectivos.isEmpty() )
+				{
+					operador = dicionarioConec.ObtemConectivo(_conectivos.get(0)._palavra);
+					_conectivos.remove(0);
+					
+					if ( operador.equals("e"))
+						operador = "^";
+					else
+						operador = "v";
+				}
+			}	
+			else
+				operador = Pattern.getOperadorLogico();
+		}catch ( Exception e)
+		{
+			operador = "?";
+		}
 		
 		for ( ProposicaoMolecular p : listMol)
 		{

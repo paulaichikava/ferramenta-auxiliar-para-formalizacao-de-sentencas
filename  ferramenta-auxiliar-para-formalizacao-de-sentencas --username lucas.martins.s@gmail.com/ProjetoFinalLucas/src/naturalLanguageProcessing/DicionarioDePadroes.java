@@ -26,9 +26,11 @@ import java.util.regex.Pattern;
 public class DicionarioDePadroes 
 {
 	private static DicionarioDePadroes _instance;
+	private static String _tipoLexico;
 	private Map<Integer, ProposicaoTag> _map;
 	private List<ProposicaoTag> _listTags;  //Esta lista acompanha o Map, sempre que algo for adicionado ao HashMap deve ser adcionado a lista.
 	private int _numeroProposicaoTagNoMap;
+	
 	
 	/**
 	 * Classe para se obter uma instancia do dicionario
@@ -39,7 +41,7 @@ public class DicionarioDePadroes
 	 */
 	public static DicionarioDePadroes getInstance(String tipoLexico)
 	{
-		if ( _instance == null )
+		if ( _instance == null || !tipoLexico.equals(_tipoLexico) )
 		{
 			_instance = new DicionarioDePadroes(tipoLexico);
 		}
@@ -214,8 +216,8 @@ public class DicionarioDePadroes
 		
 		// Caso #2: Maria e Jorge gostam de novela.    ->  PNM CJ PNM V PREP CN.
 		lista = new ArrayList<Pattern>();
-		lista.add(Pattern.compile("CJ0.*?PNM1")); // Match "KC0 Jorge " o ou serve para caso tenha um não na sentença
-		lista.add(Pattern.compile("PNM0.*?CJ0")); // Match "Maria KC0 "
+		lista.add(Pattern.compile("((CJ0.*?(?=ADV0))|(CJ0.*?(?=V0)))")); // Match "CJ0 até algo antes de um verbo"
+		lista.add(Pattern.compile("PNM0.*?CJ0")); // Match "Maria CJ0 "
 		//ProposicaoTag a1 = new ProposicaoTag(".*? KC .*? V .*?\\.", lista, "EOU", -1);
 		ProposicaoTag a1 = new ProposicaoTag("PNM CJ PNM .*?V .*?\\.", lista, "EOU", -1);
 		_map.put(_numeroProposicaoTagNoMap,a1);
@@ -234,8 +236,8 @@ public class DicionarioDePadroes
 		// Caso #6: Se Lucas foi jogar bola, logo Matheus foi jogar bola.  -> CJ PNM V V CN VRG ADV PNM V V CN.
 		lista = new ArrayList<Pattern>();
 		lista.add(Pattern.compile("(?<=CJ0 ).*? (?=VRG0)")); // Match "PNM V V CN"
-		lista.add(Pattern.compile("(?<=ADV0 ).*?\\.")); // Match "PNM V V CN."
-		ProposicaoTag a3 = new ProposicaoTag("^CJ .*? VRG .*?ADV .*?\\.", lista, "->",0);
+		lista.add(Pattern.compile("(?<=VRG0 ADV\\d ).*?\\.")); // Match "PNM V V CN."
+		ProposicaoTag a3 = new ProposicaoTag("^CJ .*? VRG ADV .*?\\.", lista, "->",0);
 		_map.put(_numeroProposicaoTagNoMap,a3);
 		_listTags.add(a3);
 		_numeroProposicaoTagNoMap++;
@@ -243,7 +245,7 @@ public class DicionarioDePadroes
 		// Caso #7: Maria comprará frango se e somente se tiver dinheiro.  -> PNM  V CN CJ CJ  ADV  CL V CN.
 		lista = new ArrayList<Pattern>();
 		lista.add(Pattern.compile("CJ0.*?$")); // Match "CJ0 CJ1 ADV0 CL0 V1 CN1."
-		lista.add(Pattern.compile("V0.*?(?=V1)")); // Match "V CN CJ CJ ADV CL "
+		lista.add(Pattern.compile("^.*?CJ0 CJ1 ADV0 CL0")); // Match "V CN CJ CJ ADV CL "
 		ProposicaoTag a6 = new ProposicaoTag(".*?CJ\\s*?CJ\\s*?ADV\\s*?CL.*?$", lista, "<->",-1);
 		_map.put(_numeroProposicaoTagNoMap,a6);
 		_listTags.add(a6);

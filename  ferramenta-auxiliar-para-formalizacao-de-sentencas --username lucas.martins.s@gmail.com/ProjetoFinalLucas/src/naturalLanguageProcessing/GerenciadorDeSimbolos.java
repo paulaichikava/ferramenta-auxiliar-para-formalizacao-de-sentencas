@@ -16,10 +16,12 @@ public class GerenciadorDeSimbolos
 	private static Map<String, String> _mapSimboloProposicao; // Map Simbulo -> Proposicao
 	private static Map<String, String> _mapProposicaoSimbolo; // Map Proposicao -> Simbulo
 	private static String _ultimoSimboloUsado; // Ultimo simbolo gerado.
+	private static int _numeroSimbolos;
 
 	private GerenciadorDeSimbolos ()
 	{
 		_ultimoSimboloUsado = "p";
+		_numeroSimbolos = 1;
 		_mapSimboloProposicao = new HashMap<String, String>();
 		_mapProposicaoSimbolo = new HashMap<String, String>();
 	}
@@ -52,30 +54,50 @@ public class GerenciadorDeSimbolos
 		proposicao = proposicao.replaceAll("Não", "");
 		
 		
+		
+		
 		if ( _mapProposicaoSimbolo.containsKey(proposicao) ) // Verifico se já existe um simbolo para esta proposição
 			return _mapProposicaoSimbolo.get(proposicao);
 		
 		char a = _ultimoSimboloUsado.charAt(_ultimoSimboloUsado.length() - 1);
-		a++;
-	//	if ( a == 'z')
-	//	{
-			
-	//	}
-		if ( _ultimoSimboloUsado.length() == 1) // Caso  tenha tamanho 1
+		if ( a == 'z' && _numeroSimbolos == 1 )
 		{
+			_ultimoSimboloUsado = "pp";
+		}
+		else if ( a == 'z') // caso eu precise adicionar uma nova letra.
+		{
+			sumSimbol(_ultimoSimboloUsado, _numeroSimbolos);
+			a = 'p';
+			_ultimoSimboloUsado = _ultimoSimboloUsado + a;
+			_numeroSimbolos++;
+		}
+		else if ( _ultimoSimboloUsado.length() == 1) // Caso  tenha tamanho 1
+	    {
+			a++;
 			_ultimoSimboloUsado = Character.toString(a);
 		}
-		else if ( a != 'z')
+		else // caso eu só precise incrementar a última letra.
 		{
-			_ultimoSimboloUsado = _ultimoSimboloUsado.substring(0, _ultimoSimboloUsado.length()-2); //removo ultimo caracter
+			a++;
+			_ultimoSimboloUsado = _ultimoSimboloUsado.substring(0, _ultimoSimboloUsado.length()-1); //removo ultimo caracter
 			_ultimoSimboloUsado = _ultimoSimboloUsado + a;
-		} 
-		else
-		{
-			a ='q';
-			_ultimoSimboloUsado = _ultimoSimboloUsado.substring(0, _ultimoSimboloUsado.length()-2); //removo ultimo caracter
-			_ultimoSimboloUsado = _ultimoSimboloUsado + a + a;
+			
 		}
+//		if ( _ultimoSimboloUsado.length() == 1) // Caso  tenha tamanho 1
+//		{
+//			_ultimoSimboloUsado = Character.toString(a);
+//		}
+//		else if ( a != 'z')
+//		{
+//			_ultimoSimboloUsado = _ultimoSimboloUsado.substring(0, _ultimoSimboloUsado.length()-2); //removo ultimo caracter
+//			_ultimoSimboloUsado = _ultimoSimboloUsado + a;
+//		} 
+//		else
+//		{
+//			a ='q';
+//			_ultimoSimboloUsado = _ultimoSimboloUsado.substring(0, _ultimoSimboloUsado.length()-2); //removo ultimo caracter
+//			_ultimoSimboloUsado = _ultimoSimboloUsado + a + a;
+//		}
 		_mapSimboloProposicao.put(_ultimoSimboloUsado, proposicao);
 		_mapProposicaoSimbolo.put(proposicao, _ultimoSimboloUsado);
 		return _ultimoSimboloUsado;		
@@ -85,5 +107,50 @@ public class GerenciadorDeSimbolos
 	{
 		String str = p.removeDuplaComNao().getCorpoDaProposicaoEmString();
 		return _mapProposicaoSimbolo.get(str);
+	}
+	
+	private String sumSimbol(String simbol, int tamanho)
+	{
+		String newSimbol;
+		tamanho--;
+		
+		if ( tamanho == -1 )
+			return simbol; // Caso base, fim do tamanho da string
+		
+		char ultimo = simbol.charAt(tamanho);
+		
+		if ( ultimo == 'z') // Caso precise voltar a letra para p
+		{
+			ultimo = 'p';
+			newSimbol = simbol.substring(0,tamanho-1)+ultimo;
+			try
+			{
+				newSimbol = newSimbol + simbol.substring(tamanho+1);
+				simbol = newSimbol;
+			}
+			catch( Exception e)
+			{
+				simbol = newSimbol;
+			}
+		}
+		else // Caso só precise incrementar a letra
+		{
+			ultimo++;
+			newSimbol = simbol.substring(0,tamanho-1)+ultimo;
+			try
+			{
+				newSimbol = newSimbol + simbol.substring(tamanho+1);
+				simbol = newSimbol;
+			}
+			catch( Exception e)
+			{
+				simbol = newSimbol;
+			}
+		}
+		
+		sumSimbol(simbol,tamanho);
+		
+		return simbol; // esta linha não deve ser chamada.
+		
 	}
 }
