@@ -1,4 +1,4 @@
-#summary One-sentence summary of this page.
+#Introdução do projeto
 
 = Introdução =
 
@@ -52,4 +52,3 @@ linguagem natural n~ao podemos garantir o reconhecimento de todo o conjunto
 de express~oes da língua. é preciso utilizar um conjunto de controle para que
 seja possível garantir, para esse grupo, o reconhecimento das express~oes e assim
 a geração de express~oes lógicas corretas.
-
