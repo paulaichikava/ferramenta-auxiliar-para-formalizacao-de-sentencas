@@ -1,0 +1,73 @@
+
+
+### Este arquivo é uma lista dos casos tratados pelo projeto ###
+
+
+# Casos com operador  '^' e 'v'  ( E / OU)
+
+	Caso1 : NPROP V de N KC NPROP V de N.
+
+	    Exemplo: Maria gosta de novela e Jorge gosta de novela.
+	    
+	    	No exemplo teremos a expressão lógica :
+			                         
+			                           q ^ r 
+			                            
+			Onde:  
+			                 q = "Maria gosta de novela."
+			                 r = "Jorge gosta de novela."
+	    
+	    * Todas as variacoes desse caso são tratadas. (ie: NPROP V de N KC NPROP V de N KC . . KC NPROP V de N KC NPROP V de N.)
+	    (ie2: Maria gosta de novela e Maria gosta de filmes e .. e Maria gosta de cinema.)
+	    
+	    Obs: Não há necessidade de uma diferenciação no tratamento de operadores 'e' e operadores 'ou'.
+    
+    Caso2 : NPROP KC NPROP V de N.
+    
+	    Exemplo : Maria e Jorge gostam de novela.
+	    
+			No exemplo teremos a expressão lógica :
+			                         
+			                           q ^ r 
+			                            
+			Onde:  
+			                 q = "Maria gostam de novela."
+			                 r = "Jorge gostam de novela."
+	    
+	    * Todas as variacoes desse caso são tratadas. (ie: NPROP KC NPROP KC NPROP ..  KC NPROP V de N.)
+	    (ie2: Maria e Jorge e José e .. e Eduardo gostam de novela.)
+   
+   Caso3: NPROP KC NPROP VAUX V N.
+   
+		Exemplo : Lucas e Matheus foram jogar bola.
+			
+			No exemplo teremos a expressão lógica :
+			                         
+			                           q ^ r 
+			                            
+			Onde:  
+			                 q = "Lucas foram jogar bola."
+			                 r = "Matheus foram jogar bola."
+			                 
+		* Todas as variacoes desse caso são tratadas. (ie: NPROP KC NPROP KC NPROP ..  KC NPROP VAUX V N.)
+	    (ie2: Maria e Jorge e José e .. e Eduardo foram jogar bola.)
+	   
+   Caso4: VAUX V N, NPROP KC NPROP.
+   
+   		Exemplo : Foram jogar bola, Lucas e Matheus.
+   		
+   			No exemplo teremos a expressão lógica :
+			                         
+			                           q ^ r 
+			                            
+			Onde:  
+			                 q = "Lucas foram jogar bola."
+			                 r = "Matheus foram jogar bola."
+			                 
+		* Todas as variacoes desse caso são tratadas. (ie: VAUX V N, NPROP KC NPROP KC NPROP .. KC NPROP.)
+		(ie2: Foram jogar bola, Eduardo e Matheus .. e Maria.)
+    
+# Casos com operador '->' ( Se .. Então ..)
+
+    Caso1:
+    
