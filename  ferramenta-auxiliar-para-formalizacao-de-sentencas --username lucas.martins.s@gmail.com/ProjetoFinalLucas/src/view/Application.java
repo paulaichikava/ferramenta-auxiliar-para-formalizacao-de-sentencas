@@ -196,7 +196,7 @@ public class Application {
 							.addComponent(FEXTwsRadio)
 							.addGap(33)
 							.addComponent(LXSuiteRadio)))						
-					.addGap(54))
+							.addGap(54))
 		));
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
