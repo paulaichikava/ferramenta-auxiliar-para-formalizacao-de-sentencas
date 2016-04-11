@@ -1,0 +1,1 @@
+Este é o meu projeto final. Ele consiste de uma ferramenta preliminar capaz de auxiliar a formalização de sentenças em português.
